@@ -1,0 +1,22 @@
+# 特殊
+user.json
+signature_*
+
+# 忽略路径
+__pycache__/
+backup/
+.cache
+env/
+.venv/
+imagePlaceholders/
+build/
+.vscode/
+
+
+# 忽略格式
+*.rat
+*.c
+*.html
+
+# baiduyun
+*.cfg

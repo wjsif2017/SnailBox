@@ -1,0 +1,174 @@
+{
+    "ffmpeg": "ffmpeg",
+    "presets": {
+        "Four type": [
+            {
+                "text": "Test_Text_000",
+                "text_type": 0,
+                "text_size": 5,
+                "text_bold": false,
+                "text_italic": false,
+                "num_pre": 0,
+                "num_suf": 3,
+                "num_fill": false,
+                "color": [
+                    0.3,
+                    0.075,
+                    0.075
+                ],
+                "margin_x": 20,
+                "margin_y": 20,
+                "rel_pos": 0
+            },
+            {
+                "text": "/obj/box1/scale",
+                "text_type": 1,
+                "text_size": 6,
+                "text_bold": false,
+                "text_italic": true,
+                "num_pre": 0,
+                "num_suf": 3,
+                "num_fill": true,
+                "color": [
+                    0.3,
+                    0.1875,
+                    0.075
+                ],
+                "margin_x": 20,
+                "margin_y": 20,
+                "rel_pos": 1
+            },
+            {
+                "text": "ch(\"/obj/box1/px\")",
+                "text_type": 2,
+                "text_size": 7,
+                "text_bold": true,
+                "text_italic": false,
+                "num_pre": 0,
+                "num_suf": 3,
+                "num_fill": false,
+                "color": [
+                    0.1875,
+                    0.3,
+                    0.075
+                ],
+                "margin_x": 20,
+                "margin_y": 20,
+                "rel_pos": 2
+            },
+            {
+                "text": "hou.parmTuple('/obj/box1/s').eval()",
+                "text_type": 3,
+                "text_size": 5,
+                "text_bold": true,
+                "text_italic": false,
+                "num_pre": 0,
+                "num_suf": 2,
+                "num_fill": true,
+                "color": [
+                    0.075,
+                    0.3,
+                    0.075
+                ],
+                "margin_x": 20,
+                "margin_y": 20,
+                "rel_pos": 3
+            }
+        ],
+        "Mix Text": [
+            {
+                "text": "Normal<b>Body</b><i>Italic</i>",
+                "text_type": 0,
+                "text_size": 6,
+                "text_bold": false,
+                "text_italic": false,
+                "num_pre": 0,
+                "num_suf": 3,
+                "num_fill": false,
+                "color": [
+                    0.585312,
+                    0.492791,
+                    0.210154
+                ],
+                "margin_x": 20,
+                "margin_y": 20,
+                "rel_pos": 0
+            }
+        ],
+        "Last Input": [
+            {
+                "text": "Test_Text_000",
+                "text_type": 0,
+                "text_size": 5,
+                "text_bold": false,
+                "text_italic": false,
+                "num_pre": 0,
+                "num_suf": 3,
+                "num_fill": false,
+                "color": [
+                    0.3,
+                    0.075,
+                    0.075
+                ],
+                "margin_x": 20,
+                "margin_y": 20,
+                "rel_pos": 0
+            },
+            {
+                "text": "/obj/box1/scale",
+                "text_type": 1,
+                "text_size": 6,
+                "text_bold": false,
+                "text_italic": false,
+                "num_pre": 0,
+                "num_suf": 3,
+                "num_fill": true,
+                "color": [
+                    0.3,
+                    0.1875,
+                    0.075
+                ],
+                "margin_x": 20,
+                "margin_y": 20,
+                "rel_pos": 1
+            },
+            {
+                "text": "ch(\"/obj/box1/px\")",
+                "text_type": 2,
+                "text_size": 7,
+                "text_bold": true,
+                "text_italic": false,
+                "num_pre": 0,
+                "num_suf": 3,
+                "num_fill": false,
+                "color": [
+                    0.1875,
+                    0.3,
+                    0.075
+                ],
+                "margin_x": 21,
+                "margin_y": 20,
+                "rel_pos": 2
+            },
+            {
+                "text": "hou.parmTuple('/obj/box1/s').eval()",
+                "text_type": 3,
+                "text_size": 5,
+                "text_bold": true,
+                "text_italic": false,
+                "num_pre": 0,
+                "num_suf": 2,
+                "num_fill": true,
+                "color": [
+                    0.075,
+                    0.3,
+                    0.075
+                ],
+                "margin_x": 20,
+                "margin_y": 20,
+                "rel_pos": 3
+            }
+        ]
+    },
+    "current_preset": "Last Input"
+}

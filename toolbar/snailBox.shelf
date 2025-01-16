@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shelfDocument>
+  <!-- This file contains definitions of shelves, toolbars, and tools.
+ It should not be hand-edited when it is being used by the application.
+ Note, that two definitions of the same element are not allowed in
+ a single file. -->
+
+  <toolshelf name="snail_box" label="Snail Box">
+    <memberTool name="snail_ae"/>
+    <memberTool name="snail_flipbook"/>
+    <memberTool name="snail_assetsManger"/>
+    <memberTool name="snail_thumb"/>
+    <memberTool name="snail_thumb_clear"/>
+  </toolshelf>
+
+  <tool name="snail_ae" label="S_Ae" icon="$SnailBox/icons/SnailAE.svg">
+    <script scriptType="python"><![CDATA[from toAe import main_ae as ae
+ae.callInterface()]]></script>
+  </tool>
+
+  <tool name="snail_flipbook" label="S_Filpbook" icon="$SnailBox/icons/SnailFB.svg">
+    <script scriptType="python"><![CDATA[from flipbook import main_fb as fb
+fb.main_show()]]></script>
+  </tool>
+
+  <tool name="snail_assetsManger" label="S_AssetsManger" icon="$SnailBox/icons/SnailPP.svg">
+    <script scriptType="python"><![CDATA[from projectPack import main_pp as pp
+import importlib
+importlib.reload(pp)
+pp.main_show()]]></script>
+  </tool>
+
+  <tool name="snail_thumb" label="s_FileThumb" icon="$SnailBox/icons/SnailFT.svg">
+    <script scriptType="python"><![CDATA[import sn_callback
+sn_callback.update_fileThumb()]]></script>
+  </tool>
+
+  <tool name="snail_thumb_clear" label="s_ClearThumb" icon="$SnailBox/icons/SnailFTC.svg.svg">
+    <script scriptType="python"><![CDATA[import sn_callback
+sn_callback.clear_node_bg()]]></script>
+  </tool>
+</shelfDocument>
