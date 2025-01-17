@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.9.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1"
+	 id="SVGRoot" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" sodipodi:docname="gallery_layout_grid_large.svg"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 16"
+	 style="enable-background:new 0 0 16 16;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#363636;stroke:#C8CCC3;}
+	.st1{fill:none;stroke:#FF9D00;stroke-width:2.2506;}
+</style>
+<sodipodi:namedview  bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="layer1" inkscape:cx="9.0357401" inkscape:cy="10.611739" inkscape:document-rotation="0" inkscape:document-units="px" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:snap-global="false" inkscape:window-height="1377" inkscape:window-maximized="1" inkscape:window-width="2560" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:zoom="31.678384" pagecolor="#ffffff" showgrid="true">
+	<inkscape:grid  id="grid24652" type="xygrid"></inkscape:grid>
+</sodipodi:namedview>
+<g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1">
+	<rect id="rect24663" x="1.5" y="1.5" class="st0" width="6.5" height="6.5"/>
+	<rect id="rect24665" x="8" y="1.5" class="st0" width="6.5" height="6.5"/>
+	<rect id="rect26021" x="1.5" y="8" class="st0" width="6.5" height="6.5"/>
+	<rect id="rect26023" x="8" y="8" class="st0" width="6.5" height="6.5"/>
+</g>
+<polyline id="rect26021_00000043417572333104055010000001422937678556542655_" class="st1" points="4.4,8 8,8 8,11.5 "/>
+<polyline id="rect26021_00000142856493625941636670000010338384419568328362_" class="st1" points="11.6,8 8,8 8,4.4 "/>
+</svg>
