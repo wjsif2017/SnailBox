@@ -11,6 +11,7 @@ env/
 imagePlaceholders/
 build/
 .vscode/
+lib/
 
 
 # 忽略格式

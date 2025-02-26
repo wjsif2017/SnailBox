@@ -1,6 +1,7 @@
 import os
 import hou
 from .module import *
+from utils import *
 from utils.imgViewer import ImgViewer
 
 
@@ -10,6 +11,7 @@ class PP_Win(QWidget):
         self.show_ignore = False
         self.filesObj = None
         self.formatDir = {}
+        self.info_flip_index = 0
 
         self.translator = QtCore.QTranslator()
         QApplication.installTranslator(self.translator)
@@ -45,6 +47,8 @@ class PP_Win(QWidget):
             "QListWidget::item:hover {color: rgb(255,163,32); border-radius: 5px; border: 2px solid rgb(255,163,32);}"
         )
         self.ui.layout_info.addWidget(self.ui.lw_info)
+        self.ui.splitter_h.splitterMoved.connect(self.stop_flipMove)
+        self.ui.splitter_v.splitterMoved.connect(self.stop_flipMove)
 
         self.thumb_viewer = thumbViewer()
         self.img_viewer = ImgViewer()
@@ -152,7 +156,7 @@ class PP_Win(QWidget):
                     continue
                 fileFilterDict[id] = file
             except Exception as e:
-                display_status(f"Snail_error_pp0: filesFilter {file.parm} _ {e}")
+                display_status(f"Snail_error_pp: filesFilter {file.parm} _ {e}")
         return fileFilterDict
 
     def refreshTable(self):
@@ -193,7 +197,7 @@ class PP_Win(QWidget):
 
                 row += 1
             except Exception as e:
-                display_status(f"Snail_error_pp0: refreshTable {item_obj.filePath} _ {e}")
+                display_status(f"Snail_error_pp: refreshTable {item_obj.filePath} _ {e}")
 
         self.table.sortItems(oldSort, oldOrder)
         self.table.setSortingEnabled(True)
@@ -221,7 +225,7 @@ class PP_Win(QWidget):
                 thumbnail_abs = hou.text.expandString(item_obj.thumbnail)
                 self.thumb_viewer.update_img(thumbnail_abs)
         except Exception as e:
-            display_status(f"Snail_error_pp0: RefreshThumb _ {e}")
+            display_status(f"Snail_error_pp: RefreshThumb _ {e}")
 
     @current_items
     def refresh_info(self, ids):
@@ -236,7 +240,7 @@ class PP_Win(QWidget):
                 newItem = QListWidgetItem(f"{key} : {value}")
                 self.ui.lw_info.addItem(newItem)
         except Exception as e:
-            display_status(f"Snail_error_pp0: RefreshInfo _ {e}")
+            display_status(f"Snail_error_pp: RefreshInfo _ {e}")
 
     def refresh(self):
         self.setLocalPath()
@@ -304,7 +308,7 @@ class PP_Win(QWidget):
             self.img_viewer.refresh(path_abs)
             self.img_viewer.raise_()
         except Exception as e:
-            display_status(f"Snail_error_pp0: show_img _ {e}")
+            display_status(f"Snail_error_pp: show_img _ {e}")
 
     @current_items
     def goToNode(self, ids):
@@ -330,7 +334,13 @@ class PP_Win(QWidget):
         self.filesObj.toggleUsdFolder(ids)
         self.refreshTable()
 
-    def flip_info(self):
+    def stop_flipMove(self):
+        if self.info_flip_index:
+            self.ui.splitter_v.setSizes([100, 0])
+        else:
+            self.ui.splitter_h.setSizes([100, 0])
+
+    def flip_info(self):  # 翻转信息面板
         try:
             font = QtGui.QFont("Microsoft YaHei UI", 9)
             self.ui.gb_asset.setFont(font)
@@ -340,6 +350,7 @@ class PP_Win(QWidget):
                 vsize2 = [vsizes[1] + vsizes[0] - 160, 160]
                 self.ui.splitter_v.setSizes(vsize2)
                 self.ui.splitter_h.setSizes([100, 0])
+                self.info_flip_index = 0
                 self.ui.layout_v.addWidget(self.ui.splitter)
                 self.ui.splitter.setOrientation(QtCore.Qt.Horizontal)
             else:
@@ -348,10 +359,11 @@ class PP_Win(QWidget):
                 hsize2 = [hsizes[1] + hsizes[0] - 160, 160]
                 self.ui.splitter_h.setSizes(hsize2)
                 self.ui.splitter_v.setSizes([100, 0])
+                self.info_flip_index = 1
                 self.ui.layout_h.addWidget(self.ui.splitter)
                 self.ui.splitter.setOrientation(QtCore.Qt.Vertical)
         except Exception as e:
-            display_status(f"Snail_error_pp0: FlipInfo _ {e}")
+            display_status(f"Snail_error_pp: FlipInfo _ {e}")
 
     def openProjectFolder(self):
         try:
@@ -363,7 +375,7 @@ class PP_Win(QWidget):
                 return
             os.startfile(packPath)
         except Exception as e:
-            display_status(f"Snail_error_pp0: openProjectFolder _ {e}")
+            display_status(f"Snail_error_pp: openProjectFolder _ {e}")
 
     def toggle_showSearch(self):
         hide = self.ui.w_search.isHidden()
@@ -381,7 +393,7 @@ class PP_Win(QWidget):
                 newPath = filePath.replace(text1, text2)
                 oneObj.setParm(newPath)
             except Exception as e:
-                display_status(f"Snail_error_pp0: replaceString _ {e}")
+                display_status(f"Snail_error_pp: replaceString _ {e}")
         self.refresh()
 
     def setLocalPath(self):
@@ -394,7 +406,7 @@ class PP_Win(QWidget):
             elideNote = fm.elidedText(projectPath, QtCore.Qt.ElideRight, labelWidth)
             self.ui.label_5.setText(elideNote)
         except Exception as e:
-            display_status(f"Snail_error_pp0: setLocalPath _ {e}")
+            display_status(f"Snail_error_pp: setLocalPath _ {e}")
 
     def toggleLocalSet(self):
         self.setLocalPath()
@@ -443,7 +455,7 @@ class PP_Win(QWidget):
                 else:
                     checkBox.setHidden(True)
             except Exception as e:
-                display_status(f"Snail_error_pp0: init_format_list _ {e}")
+                display_status(f"Snail_error_pp: init_format_list _ {e}")
 
     def openDialog(self):
         try:
@@ -461,7 +473,7 @@ class PP_Win(QWidget):
             self.ui2.cb_3.setChecked(PPSET.lockedNode)
             self.ui2.cb_4.setChecked(PPSET.packThumb)
         except Exception as e:
-            display_status(f"Snail_error_pp0: openDialog _ {e}")
+            display_status(f"Snail_error_pp: openDialog _ {e}")
             if ALLSET.language:
                 msg = "读取 conf/projectPack.json 配置文件失败"
             else:
@@ -489,7 +501,7 @@ class PP_Win(QWidget):
                 subList2 = [subf.lower() for subf in subList]
                 formatDir2[key] = subList2
             except Exception as e:
-                display_status(f"Snail_error_pp0: setFormatList {e}")
+                display_status(f"Snail_error_pp: setFormatList {e}")
         PPSET.formatDir = formatDir2
         PPSET.cacheDisk = self.ui2.cb_1.isChecked()
         PPSET.bypass = self.ui2.cb_2.isChecked()
@@ -506,7 +518,7 @@ class PP_Win(QWidget):
             btnItems = self.table.selectedItems()
             ids = [item.data(QtCore.Qt.UserRole) for item in btnItems if item.column() == 0]
             if ids:
-                menu = QMenu()
+                menu = Snail_Menu()
                 menu.addAction(self.tr_localization, self.setlocalPath)
                 menu.addAction(self.tr_absolutePath, self.setAbsolutePath)
                 menu.addAction(self.tr_customPath, self.setCustomPath)
@@ -518,13 +530,9 @@ class PP_Win(QWidget):
                 menu.addAction(self.tr_toggleIgnore, self.toggleIgnore)
                 menu.addAction(self.tr_toggleUsdFolder, self.toggleUsdFolder)
                 menu.addSeparator()
-                menu_style = """
-                    QMenu {text-align: center;font-family: Microsoft YaHei UI;font-size: 11pt;}
-                    QMenu::item:selected {background-color: rgb(35,35,39);color: rgb(255,163,32); font-family: Microsoft YaHei UI; }"""
-                menu.setStyleSheet(menu_style)
                 menu.exec_(self.table.viewport().mapToGlobal(position))
         except Exception as e:
-            display_status(f"Snail_error_pp0: rightClickContext _ {e}")
+            display_status(f"Snail_error_pp: rightClickContext _ {e}")
 
     def closeEvent(self, event):
         sc_tab = hou.ui.findPaneTab("Snail_sc2")
@@ -593,7 +601,7 @@ class PP_Win(QWidget):
             self.tr_toggleIgnore = self.tr("Toggle Ignore")
             self.tr_toggleUsdFolder = self.tr("USD Folder")
         except Exception as e:
-            display_status(f"Snail_error_pp0: retranslateUi _ {e}")
+            display_status(f"Snail_error_pp: retranslateUi _ {e}")
 
 
 def main_show():

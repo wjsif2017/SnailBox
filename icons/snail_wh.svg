@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.9.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1"
+	 id="svg1872" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:cc="http://creativecommons.org/ns#"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64"
+	 style="enable-background:new 0 0 64 64;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#EEEEEC;stroke:url(#path20_00000121281432626512926050000017848993338112116909_);stroke-width:4.7983;}
+	.st1{fill:#35B2FF;}
+	.st2{fill:#6AFFBE;}
+	.st3{fill:none;stroke:#FFFFFF;stroke-width:5;stroke-miterlimit:10;}
+	.st4{fill:#424242;}
+	.st5{fill:#424242;stroke:#FFFFFF;stroke-miterlimit:10;}
+</style>
+<sodipodi:namedview  bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="layer1" inkscape:cx="7.0545137" inkscape:cy="7.1899914" inkscape:deskcolor="#d1d1d1" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:pagecheckerboard="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:showpageshadow="2" inkscape:window-height="1378" inkscape:window-maximized="1" inkscape:window-width="2560" inkscape:window-x="-6" inkscape:window-y="-6" inkscape:zoom="51.669047" pagecolor="#ffffff" showgrid="true">
+	<inkscape:grid  id="grid1" type="xygrid"></inkscape:grid>
+</sodipodi:namedview>
+<g id="layer1" inkscape:groupmode="layer" inkscape:label="Layer 1">
+	
+		<linearGradient id="path20_00000002371816686725440160000000779922276983869101_" gradientUnits="userSpaceOnUse" x1="6823.4258" y1="8026.8359" x2="6823.4258" y2="8026.8359" gradientTransform="matrix(0.2077 0 0 0.211 -1360.2255 -1645.9623)">
+		<stop  offset="0" style="stop-color:#595959"/>
+		<stop  offset="1" style="stop-color:#161719"/>
+	</linearGradient>
+	
+		<path id="path20_00000163763660450119608110000006952686756412433566_" inkscape:connector-curvature="0" style="fill:#EEEEEC;stroke:url(#path20_00000002371816686725440160000000779922276983869101_);stroke-width:4.7983;" d="
+		M57,47.7"/>
+	<path inkscape:connector-curvature="0" class="st1" d="M56.1,55.2H8.3c-1.4,0-2.4-1.2-2.4-2.6V11c0-1.4,1.1-2.6,2.4-2.6h47.8
+		c1.4,0,2.4,1.2,2.4,2.6v41.6c0,0.3-0.1,1.2-0.7,1.9C57.2,55.3,56.3,55.2,56.1,55.2z"/>
+	<path class="st2" d="M56.1,41.9C48.6,33.6,41,25.4,33.5,17.2c-5.3,7.7-10.7,15.3-16,23c-4.7-3.9-9.4-7.9-14-11.8
+		c0.2,8.4,0.4,16.9,0.7,25.3l51.1,1.6l2.9-8.5L56.1,41.9z"/>
+	<path inkscape:connector-curvature="0" class="st3" d="M56.1,55.2H8.3c-1.4,0-2.4-1.2-2.4-2.6V11c0-1.4,1.1-2.6,2.4-2.6h47.8
+		c1.4,0,2.4,1.2,2.4,2.6v41.6c0,0.3-0.1,1.2-0.7,1.9C57.2,55.3,56.3,55.2,56.1,55.2z"/>
+	<rect x="8.4" y="44.2" class="st4" width="47.6" height="8.6"/>
+	<polygon class="st5" points="44.2,31.6 53.1,13.8 33.2,15 37.3,21.2 23.6,30.2 19.5,24 10.6,41.9 30.5,40.7 26.4,34.4 40,25.4 	"/>
+</g>
+</svg>

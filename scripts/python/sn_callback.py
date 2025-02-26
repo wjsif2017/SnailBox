@@ -1,5 +1,6 @@
+from utils.allSetting import ALLSET
+from utils.snailFun import *
 from utils import fileThumb
-from utils import *
 
 
 def update_callback(**kwargs):
@@ -48,8 +49,8 @@ def node_changed_callback(**kwargs):
             filethumb = fileThumb.FileThumb(node=node)
             filethumb.change_node_bg()
         elif event_type == hou.nodeEventType.NameChanged:
-            old_name = kwargs["old_name"]
-            parm_name = kwargs["parm_name"]
+            old_name = kwargs.get("old_name")
+            parm_name = kwargs.get("parm_name")
             new_path = node.path()
             old_path = new_path.rsplit("/", 1)[0] + "/" + old_name
             filethumb = fileThumb.FileThumb(node=node)
@@ -72,7 +73,7 @@ def parm_changed_callback(**kwargs):
         filethumb.update_node_bg()
     except Exception as e:
         node = kwargs.get("node")
-        msg = f"Snail_error_cb004: parm_changed_callback {node} _ {e}"
+        msg = f"Snail_error_cb: parm_changed_callback {node} _ {e}"
         display_status(msg)
         node.removeAllEventCallbacks()
 
@@ -97,8 +98,8 @@ def clear_node_bg(nodes=[]):
                 return
             parent_node = panetabs[0].pwd()
             parent_node.destroyUserData("backgroundimages")
-        except:
-            display_status(f"Snail_error_cb: clear_node_bg {node} _ {e}")
+        except Exception as e:
+            display_status(f"Snail_error_cb: clear_node_bg _ {e}")
     else:
         for node in nodes:
             try:
@@ -123,4 +124,4 @@ def update_fileThumb():
                 file_node = fileThumb.FileThumb(node=node, needParm=1)
                 file_node.auto_update_node_bg()
             except Exception as e:
-                display_status(f"Snail_error_cb001: update_fileThumb {node} _ {e}")
+                display_status(f"Snail_error_cb: update_fileThumb {node} _ {e}")

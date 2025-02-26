@@ -1,0 +1,77 @@
+#usda 1.0
+(
+    defaultPrim = "Snail_main"
+    framesPerSecond = 25
+    metersPerUnit = 1
+    timeCodesPerSecond = 25
+    upAxis = "Y"
+)
+
+def Xform "Snail_main" (
+    assetInfo = {
+        asset identifier = @./Snail_main.usd@
+        string name = "Snail_main"
+        asset thumbnail = @./thumbnail.png@
+    }
+    prepend inherits = </__class__/Snail_main>
+    kind = "component"
+    prepend payload = @./payload.usdc@
+    variants = {
+        string geo = "geo0"
+    }
+    prepend variantSets = "geo"
+)
+{
+    variantSet "geo" = {
+        "geo0" (
+            prepend apiSchemas = ["GeomModelAPI"]
+            kind = "component"
+        ) {
+            float3[] extentsHint = [(-0.12975533, 0.051532112, -0.12947133), (0.12958215, 0.30745924, 0.12947133)]
+
+        }
+        "geo1" (
+            prepend apiSchemas = ["GeomModelAPI"]
+            kind = "component"
+        ) {
+            float3[] extentsHint = [(-0.12975533, -0.00065910525, -0.12947133), (0.12975533, 0.30745924, 0.12947133)]
+
+        }
+        "geo2" (
+            prepend apiSchemas = ["GeomModelAPI"]
+            kind = "component"
+        ) {
+            float3[] extentsHint = [(-0.12949073, 0.053725604, -0.12967524), (0.12949073, 0.30775547, 0.12978439)]
+
+        }
+        "geo3" (
+            prepend apiSchemas = ["GeomModelAPI"]
+            kind = "component"
+        ) {
+            float3[] extentsHint = [(-0.11046303, 0.094335675, -0.12934706), (0.11071089, 0.30123302, 0.08935718)]
+
+        }
+        "geo4" (
+            prepend apiSchemas = ["GeomModelAPI"]
+            kind = "component"
+        ) {
+            float3[] extentsHint = [(-0.08777075, 0.15357654, -0.114511035), (0.05693078, 0.30408305, 0.032571107)]
+
+        }
+        "geo5" (
+            prepend apiSchemas = ["GeomModelAPI"]
+            kind = "component"
+        ) {
+            float3[] extentsHint = [(-0.07960211, 0.1617448, -0.111511216), (0.05060456, 0.29790547, 0.02479137)]
+
+        }
+    }
+}
+
+class "__class__"
+{
+    class "Snail_main"
+    {
+    }
+}
+

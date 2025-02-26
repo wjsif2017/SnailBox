@@ -1,0 +1,31 @@
+#usda 1.0
+(
+    defaultPrim = "Snail_bg"
+    framesPerSecond = 25
+    metersPerUnit = 1
+    timeCodesPerSecond = 25
+    upAxis = "Y"
+)
+
+def Xform "Snail_bg" (
+    prepend apiSchemas = ["GeomModelAPI"]
+    assetInfo = {
+        asset identifier = @./Snail_bg.usd@
+        string name = "Snail_bg"
+        asset thumbnail = @./thumbnail.png@
+    }
+    prepend inherits = </__class__/Snail_bg>
+    kind = "component"
+    prepend payload = @./payload.usdc@
+)
+{
+    float3[] extentsHint = [(-0.9357735, 0, -1.7975127), (1.0642265, 2, 2.2024875)]
+}
+
+class "__class__"
+{
+    class "Snail_bg"
+    {
+    }
+}
+

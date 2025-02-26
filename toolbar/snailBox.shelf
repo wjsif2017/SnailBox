@@ -9,6 +9,8 @@
     <memberTool name="snail_ae"/>
     <memberTool name="snail_flipbook"/>
     <memberTool name="snail_assetsManger"/>
+    <memberTool name="snail_textureBrowser"/>
+    <memberTool name="snail_materialManger"/>
     <memberTool name="snail_thumb"/>
     <memberTool name="snail_thumb_clear"/>
   </toolshelf>
@@ -23,10 +25,13 @@ ae.callInterface()]]></script>
 fb.main_show()]]></script>
   </tool>
 
+  <tool name="snail_textureBrowser" label="S_TextureBrowser" icon="$SnailBox/icons/SnailHT.svg">
+    <script scriptType="python"><![CDATA[from hdrTex import main_ht as ht
+ht.main_show()]]></script>
+  </tool>
+
   <tool name="snail_assetsManger" label="S_AssetsManger" icon="$SnailBox/icons/SnailPP.svg">
     <script scriptType="python"><![CDATA[from projectPack import main_pp as pp
-import importlib
-importlib.reload(pp)
 pp.main_show()]]></script>
   </tool>
 
@@ -38,5 +43,10 @@ sn_callback.update_fileThumb()]]></script>
   <tool name="snail_thumb_clear" label="s_ClearThumb" icon="$SnailBox/icons/SnailFTC.svg.svg">
     <script scriptType="python"><![CDATA[import sn_callback
 sn_callback.clear_node_bg()]]></script>
+  </tool>
+
+  <tool name="snail_materialManger" label="S_MaterialManger" icon="$SnailBox/icons/SnailMM.svg">
+    <script scriptType="python"><![CDATA[from materialBox import main_mm as mm
+mm.main_show()]]></script>
   </tool>
 </shelfDocument>
