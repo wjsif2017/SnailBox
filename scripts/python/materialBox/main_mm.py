@@ -39,7 +39,7 @@ class MM_Win(QWidget):
         mainlayout.addWidget(self.ui)
         self.setLayout(mainlayout)
         self.resize(780, 650)
-        self.setWindowTitle("Snail 材质管理器 1.0")
+        self.setWindowTitle("Snail Material Manager")
         self.setWindowIcon(QtGui.QIcon(ALLSET.sbox_path + "/icons/SnailBox.svg"))
         self.ui.lw_view.setStyleSheet(
             "QListWidget::item:hover{background-color:rgba(0, 0, 0, 0);}"
