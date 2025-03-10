@@ -34,7 +34,7 @@ def update_callback(**kwargs):
 def reset_node_bg_event(nodes=[]):
     for node in nodes:
         try:
-            filethumb = fileThumb.FileThumb(node=node, needParm=1)
+            filethumb = fileThumb.FileThumb(node=node)
             filethumb.reset_bg_event()
         except Exception as e:
             msg = f"Snail_error_cb: reset_node_bg_event {node} _ {e}"

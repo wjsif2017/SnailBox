@@ -322,10 +322,13 @@ class Ui_Dialog(QDialog):
         layout_01 = QVBoxLayout()
         self.cb_copyAssets = Snail_CheckBox("Copy assets to lib when Collecting material")
         self.cb_nodebg = Snail_CheckBox("Set node background for crate material")
+        self.cb_gsgTri = Snail_CheckBox("Set triplanar texture for GSG material")
         self.cb_copyAssets.toggled.connect(self.toggle_copy)
         self.cb_nodebg.toggled.connect(self.toggle_setBg)
+        self.cb_gsgTri.toggled.connect(self.toggle_gsgTri)
         layout_01.addWidget(self.cb_copyAssets)
         layout_01.addWidget(self.cb_nodebg)
+        layout_01.addWidget(self.cb_gsgTri)
 
         layout_main0 = QVBoxLayout()
         layout_main0.addLayout(layout_01)
@@ -375,7 +378,7 @@ class Ui_Dialog(QDialog):
         self.sb_libAdd.clicked.connect(self.add_lib)
         self.sb_libDel.clicked.connect(self.del_lib)
         self.sb_libMod.clicked.connect(self.mod_lib)
-        self.sb_libRescan.clicked.connect(self.rescan_lib)
+        self.sb_libRescan.clicked.connect(self.update_lib)
         layout_14.addWidget(self.sb_libDel)
         layout_14.addWidget(self.sb_libMod)
         layout_14.addWidget(self.sb_libRescan)
@@ -480,6 +483,7 @@ class Ui_Dialog(QDialog):
     def refresh_option(self):
         self.cb_copyAssets.setChecked(MYSET.copy_option)
         self.cb_nodebg.setChecked(MYSET.setBg)
+        self.cb_gsgTri.setChecked(MYSET.gsg_tri)
 
     def refresh_other_node(self):
         self.slw_other_nodes.clear()
@@ -493,11 +497,13 @@ class Ui_Dialog(QDialog):
 
     def refresh_table_libList(self):
         self.stw_libList.clearContents()
-        self.stw_libList.setRowCount(len(MYSET.lib_list))
-        for index, lib in enumerate(MYSET.lib_list):
-            name = lib["name"]
-            path = lib["path"]
-            self.stw_libList.setItem(index, 0, QTableWidgetItem(name))
+        self.stw_libList.setRowCount(len(MYSET.lib_sort))
+        for index, lib_name in enumerate(MYSET.lib_sort):
+            lib_dict = MYSET.libs.get(lib_name)
+            if lib_dict is None:
+                continue
+            path = lib_dict.get("path")
+            self.stw_libList.setItem(index, 0, QTableWidgetItem(lib_name))
             self.stw_libList.setItem(index, 1, QTableWidgetItem(path))
 
     def refresh_add_cb(self):
@@ -516,17 +522,21 @@ class Ui_Dialog(QDialog):
 
     def refresh_index_cb(self):
         self.scb_index.clear()
-        for i in range(len(MYSET.lib_list) + 1):
+        num = len(MYSET.lib_sort)
+        for i in range(num + 1):
             index = str(i + 1)
             self.scb_index.addItem(index)
-        self.scb_index.setCurrentIndex(len(MYSET.lib_list))
+        self.scb_index.setCurrentIndex(num)
 
     def refresh_lib_set(self):
         self.refresh_lib_tips(-1)
         index = self.stw_libList.currentRow()
-        lib = MYSET.lib_list[index]
-        self.sle_libName.setText(lib["name"])
-        self.sle_libPath.setText(lib["path"])
+        lib_name = self.sel_lib_name()
+        if not lib_name:
+            return
+        lib = MYSET.libs.get(lib_name)
+        self.sle_libName.setText(lib.get("name"))
+        self.sle_libPath.setText(lib.get("path"))
         self.scb_lib_type.setCurrentText(lib.get("type"))
         self.scb_icon.setCurrentText(lib.get("icon"))
         lib_index = str(index + 1)
@@ -605,36 +615,37 @@ class Ui_Dialog(QDialog):
         self.t_tips2.update_tips(tips2)
         self.t_tips3.update_tips(tips3)
 
-    def sel_index(self):
+    def sel_lib_name(self):
         index = self.stw_libList.currentRow()
         if index == -1:
             msg = "请在表格中点击选择一个库" if ALLSET.language else "Select a lib"
             hou.ui.displayMessage(msg)
-            return -1
-        return index
-
-    def rescan_lib(self):
-        index = self.sel_index()
-        if index == -1:
             return
-        lib_name = MYSET.lib_list[index].get("name")
-        MYSET.scan_lib(lib_name)
+        lib_name = MYSET.lib_sort[index]
+        if lib_name:
+            return lib_name
+
+    def update_lib(self):
+        lib_name = self.sel_lib_name()
+        if not lib_name:
+            return
+        MYSET.update_lib(lib_name)
 
     def del_lib(self):
-        index = self.sel_index()
-        if index == -1:
+        lib_name = self.sel_lib_name()
+        if not lib_name:
             return
-        lib_name = MYSET.lib_list[index].get("name")
         MYSET.del_lib(lib_name)
         self.refresh_index_cb()
         self.refresh_table_libList()
-        self.update_lib()
+        self.update_win()
 
     def mod_lib(self):
-        before_index = self.sel_index()
-        if before_index == -1:
+        lib_name = self.sel_lib_name()
+        if not lib_name:
             return
-        lib_json = MYSET.lib_list[before_index]
+        MYSET.del_lib(lib_name)
+        lib_json = MYSET.libs.get(lib_name)
         before_name = lib_json.get("name")
         before_type = lib_json.get("type")
 
@@ -663,18 +674,14 @@ class Ui_Dialog(QDialog):
         try:
             lib_json["icon"] = lib_icon_index
             lib_json["path"] = lib_path
-            lib_json_abs = MYSET.lib_path + "/" + before_name + "/lib.json"
-            save_json(lib_json, lib_json_abs)
-            MYSET.lib_list.pop(before_index)
-            MYSET.lib_list.insert(new_index, lib_json)
-            MYSET.lib_sort.pop(before_index)
+            MYSET.save_lib_json(lib_name, lib_json)
+            MYSET.lib_sort.remove(lib_name)
             MYSET.lib_sort.insert(new_index, lib_name)
-            MYSET.save_set()
         except Exception as e:
             display_status(f"Snail_error_usf: mod_lib _ {e}", 1)
-            MYSET.scan_libs()
+        MYSET.scan_libs()
         self.refresh_table_libList()
-        self.update_lib()
+        self.update_win()
 
     def add_lib(self):
         lib_type = self.scb_lib_type.currentText()
@@ -684,6 +691,7 @@ class Ui_Dialog(QDialog):
             lib_path = "snailBox_this"
         else:
             lib_path = self.sle_libPath.text()
+            lib_path = hou.text.expandString(lib_path)
         lib_index = int(self.scb_index.currentText()) - 1
 
         if not lib_name or not lib_path:
@@ -694,12 +702,12 @@ class Ui_Dialog(QDialog):
             hou.ui.displayMessage(msg)
             return
 
-        if lib_name in [one["name"] for one in MYSET.lib_list]:
+        if lib_name in MYSET.lib_sort:
             if ALLSET.language:
                 msg2 = f"{lib_name}库已存在"
             else:
                 msg2 = f"{lib_name} library already exists"
-            hou.ui.displayMessage(msg)
+            hou.ui.displayMessage(msg2)
             return
 
         lib_dict = {
@@ -712,7 +720,7 @@ class Ui_Dialog(QDialog):
         if res:
             self.refresh_index_cb()
             self.refresh_table_libList()
-            self.update_lib()
+            self.update_win()
 
     def toggle_setBg(self):
         MYSET.setBg = self.cb_nodebg.isChecked()
@@ -720,6 +728,10 @@ class Ui_Dialog(QDialog):
 
     def toggle_copy(self):
         MYSET.copy_option = self.cb_copyAssets.isChecked()
+        self.save_set()
+
+    def toggle_gsgTri(self):
+        MYSET.gsg_tri = self.cb_gsgTri.isChecked()
         self.save_set()
 
     def add_other_node(self, parm_path, node_path):
@@ -807,6 +819,7 @@ class Ui_Dialog(QDialog):
         try:
             self.cb_copyAssets.setText(self.tr("Copy assets to lib when Collecting material"))
             self.cb_nodebg.setText(self.tr("Set node background for crate material"))
+            self.cb_gsgTri.setText(self.tr("Set triplanar texture for GSG material"))
             self.sb_libDel.setText(self.tr("Delete"))
             self.sb_libMod.setText(self.tr("Modify"))
             self.sb_libRescan.setText(self.tr("Update"))
@@ -822,7 +835,7 @@ class Ui_Dialog(QDialog):
         except Exception as e:
             display_status(f"Snail_error_ht4: retranslateUi _ {e}")
 
-    def update_lib(self):
+    def update_win(self):
         self.pa.updateMenu()
         self.pa.menu_toggle()
 

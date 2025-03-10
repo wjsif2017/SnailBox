@@ -7,13 +7,14 @@ from .module import *
 class MM_Win(QWidget):
     def __init__(self):
         super(MM_Win, self).__init__()
-        self.lib_index = 0
+        self.lib_name = "Project"
         self.lib = None
         self.filter_items = {}
         self.group_index = 0
         self.current_id = 0
         self.info_flip_index = 0
         self.show_menu = False
+        self.last_index = 0
         self.translator = QtCore.QTranslator()
         QApplication.installTranslator(self.translator)
 
@@ -21,16 +22,11 @@ class MM_Win(QWidget):
         self.init_data()
 
     def init_ui(self):
-
-        if 0:
-            ufile = ALLSET.sbox_path + "/scripts/python/materialBox/file/mat5.ui"
-            self.ui = QtUiTools.QUiLoader().load(ufile, parentWidget=self)
-        else:
-            self.ui = Ui_Snail_MM()
-            self.ui.setupUi(self.ui)
-            self.setStyleSheet("*{background-color: rgb(35, 35, 39);}")
-            self.ui.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-            self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.ui = Ui_Snail_MM()
+        self.ui.setupUi(self.ui)
+        self.setStyleSheet("*{background-color: rgb(35, 35, 39);}")
+        self.ui.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.ui_set = Ui_Dialog(self)
 
         mainlayout = QVBoxLayout()
@@ -39,7 +35,7 @@ class MM_Win(QWidget):
         mainlayout.addWidget(self.ui)
         self.setLayout(mainlayout)
         self.resize(780, 650)
-        self.setWindowTitle("Snail Material Manager")
+        self.setWindowTitle("Snail Material Manger")
         self.setWindowIcon(QtGui.QIcon(ALLSET.sbox_path + "/icons/SnailBox.svg"))
         self.ui.lw_view.setStyleSheet(
             "QListWidget::item:hover{background-color:rgba(0, 0, 0, 0);}"
@@ -87,7 +83,7 @@ class MM_Win(QWidget):
         self.ui.layout_bottom.addWidget(self.btn_createImg)
         self.ui.layout_bottom.addWidget(self.btn_refresh)
 
-        self.l_title = Snail_LabelB("项目材质", 14)
+        self.l_title = Snail_LabelB("Project", 14)
         spacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.ui.layout_top.insertWidget(0, self.l_title)
         self.ui.layout_top.insertItem(1, spacer)
@@ -127,25 +123,26 @@ class MM_Win(QWidget):
         self.ui.lw_menu1.itemClicked.connect(self.menu_toggle)
         self.ui.lw_view.itemClicked.connect(self.item_click)
         self.ui.lw_view.itemDoubleClicked.connect(self.item_double_click)
+        self.ui.lw_view.verticalScrollBar().valueChanged.connect(self.on_scroll)
         self.ui.lw_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.lw_view.customContextMenuRequested.connect(self.rightClickContext)
 
     def init_data(self):
-        self.load_language()
-        if self.lib_index == 0:
+        if not self.lib_name or self.lib_name == "Project":
             self.lib = ProjectMats()
+            self.tb_clear.setDisabled(False)
         else:
-            self.lib = LibMats(self.lib_index)
+            self.lib = LibMats(self.lib_name)
+            self.tb_clear.setDisabled(True)
         self.load_language()
         self.group_index = 0
-        self.tb_clear.setDisabled(self.lib_index)
         self.l_title.setText(self.lib.lib_name)
         self.refresh()
 
     def refresh(self):
         self.current_id = 0
         self.refresh_groups()
-        self.refresh_mats()
+        self.refresh_btnItems()
         self.refresh_info()
         self.refresh_assets()
 
@@ -157,20 +154,50 @@ class MM_Win(QWidget):
 
         self.cb_group.setCurrentIndex(self.group_index)
 
-    def refresh_mats(self):
-        self.filter_mats()
-        self.ui.lw_view.clear()
+    def on_scroll(self):
+        if self.last_index < 1:
+            return
+        all_num = len(self.filter_items)
+        current_num = self.last_index + 1
 
-        for id, mat in self.filter_items.items():
+        if current_num >= all_num:
+            return
+        index = self.last_index
+        last_item_widget = self.ui.lw_view.item(index)
+        item_rect = self.ui.lw_view.visualItemRect(last_item_widget)
+        lw_h = self.ui.lw_view.size().height()
+        pos_y = item_rect.y()
 
-            btn_item = mat.get_thumbnail_btn()
-            item = QListWidgetItem()
-            item.setSizeHint(QtCore.QSize(mat.thumbnail_size))
-            item.setData(QtCore.Qt.UserRole, id)
-            self.ui.lw_view.addItem(item)
-            self.ui.lw_view.setItemWidget(item, btn_item)
+        if pos_y < lw_h and pos_y > 20:
+            self.refresh_btnItems(current_num)
 
-        self.ui.lw_view.repaint()
+    def refresh_btnItems(self, start=0):
+        addnum = 10
+        if not start:
+            self.get_filter_items()
+            self.last_index = 0
+            self.ui.lw_view.clear()
+        i = 0
+        end = start + addnum
+        for id, item in self.filter_items.items():
+            try:
+                if i < start:
+                    i += 1
+                    continue
+                thumbnail_btn = item.get_thumbnail_btn()
+                btnItem = QListWidgetItem()
+                btnItem.setSizeHint(item.thumbnail_size)
+                btnItem.setData(QtCore.Qt.UserRole, id)
+                self.ui.lw_view.addItem(btnItem)
+                self.ui.lw_view.setItemWidget(btnItem, thumbnail_btn)
+                i += 1
+                if i == end:
+                    break
+            except Exception as e:
+                display_status(f"Snail_error_mm: refresh_btnItems {id} _ {e}")
+        self.last_index = i - 1
+
+        self.on_scroll()
 
     def refresh_info(self):
         self.lw_info.clear()
@@ -210,14 +237,12 @@ class MM_Win(QWidget):
         mat = self.filter_items.get(self.current_id)
         if not mat:
             return
+        thumb_dir = mat.assets_thumb_dir
         assets = mat.get_assets()
-        if assets:
-            imgs = assets
-        else:
-            imgs = []
-        self.assetsViewer.update(imgs)
+        imgs = assets if assets else []
+        self.assetsViewer.update(imgs, thumb_dir)
 
-    def filter_mats(self):
+    def get_filter_items(self):
         group_filter_items = self.lib.group_filter_items
         ignore_active = self.tb_ignore.isChecked()
         fav_active = self.tb_fav.isChecked()
@@ -233,20 +258,19 @@ class MM_Win(QWidget):
         self.filter_items = filter_items
 
     def menu_toggle(self):
-        old_lib_index = self.lib_index
+        old_lib_name = self.lib_name
         item = self.ui.lw_menu1.currentItem()
-        index = item.data(QtCore.Qt.UserRole)
-        if index == -1:
+        lib_name = item.data(QtCore.Qt.UserRole)
+        if lib_name == "Add lib":
             self.ui_set.main_show()
             self.ui_set.stw.setCurrentIndex(1)
             return
-        self.lib_index = index
-        if index != old_lib_index:
+        self.lib_name = lib_name
+        if lib_name != old_lib_name:
             self.lib.update_lib_item()
         self.init_data()
 
     def check_mats_changed(self):
-
         self.lib.get_all_matNodes()
         if self.lib.is_updated:
             self.init_data()
@@ -307,7 +331,7 @@ class MM_Win(QWidget):
                 continue
             mat.create_thumbnail()
             self.ui.pb_progress.setValue(i)
-            self.refresh_mats()
+            self.refresh_btnItems()
             QApplication.processEvents()
             i += 1
         time.sleep(1)
@@ -383,22 +407,23 @@ class MM_Win(QWidget):
         item.open_folder()
 
     @current_ids
-    def items_collect(self, ids, lib_index=1):
-        self.lib.items_collect(ids, lib_index)
+    def items_collect(self, ids, lib_name=None):
+        self.lib.items_collect(ids, lib_name)
 
     @current_item
     def item_rename(self, item, btn_item):
         new_name = btn_item.text()
-        item.rename(new_name)
+        if self.lib.lib_type == "Custom lib":
+            item.rename(new_name)
 
     def show_ignore(self):
         self.current_id = 0
-        self.refresh_mats()
+        self.refresh_btnItems()
         self.refresh_info()
 
     def solo_fav(self):
         self.current_id = 0
-        self.refresh_mats()
+        self.refresh_btnItems()
         self.refresh_info()
 
     def go_obj_node(self):
@@ -479,24 +504,25 @@ class MM_Win(QWidget):
         self.ui.lw_menu1.clear()
         self.ui.lw_menu1.setIconSize(QtCore.QSize(40, 40))
         self.ui.lw_menu1.setGridSize(QtCore.QSize(70, 72))
-        assetsList = MYSET.all_libs
-        for index in range(len(assetsList)):
-            icon_num = assetsList[index]["icon"]
-            name = assetsList[index]["name"]
+        all_libs = {"Project": MYSET.lib_pj, **MYSET.libs}
+        index = 0
+        for one in all_libs.values():
+            icon_num = one.get("icon")
+            name = one.get("name")
             icon = QtGui.QIcon(f"{ALLSET.sbox_path}/file/icon02/{icon_num}.svg")
             item = QListWidgetItem(icon, "")
             item.setSizeHint(QtCore.QSize(70, 60))
             item.setText(name)
-            item.setData(QtCore.Qt.UserRole, index)
+            item.setData(QtCore.Qt.UserRole, name)
             index += 1
 
             self.ui.lw_menu1.addItem(item)
-        if len(assetsList) == 1:
+        if len(all_libs) == 1:
             icon = QtGui.QIcon(f"{ALLSET.sbox_path}/file/icon02/10042.svg")
             item = QListWidgetItem(icon, "")
             item.setSizeHint(QtCore.QSize(70, 60))
             item.setText("Add lib")
-            item.setData(QtCore.Qt.UserRole, -1)
+            item.setData(QtCore.Qt.UserRole, "Add lib")
             self.ui.lw_menu1.addItem(item)
         self.ui.lw_menu1.setCurrentRow(0)
 
@@ -505,12 +531,17 @@ class MM_Win(QWidget):
         menu.aboutToHide.connect(self.start_timer)
         idx = self.ui.lw_view.selectedItems()
         if idx:
-            submenu = Snail_Menu(self.tr_changeGroup)
-            submenu.addAction(self.tr_addGroup, self.items_add_group)
-            submenu.addAction(self.tr_removeGroup, lambda: self.items_modify_group(None))
-            groups = self.lib.custom_groups[::-1]
-            for group in groups:
-                submenu.addAction(" " + group, lambda group=group: self.items_modify_group(group))
+            if self.lib.lib_type != "GSG materials":
+                submenu = Snail_Menu(self.tr_changeGroup)
+                submenu.addAction(self.tr_addGroup, self.items_add_group)
+                submenu.addAction(self.tr_removeGroup, lambda: self.items_modify_group(None))
+                groups = self.lib.custom_groups[::-1]
+                for group in groups:
+                    submenu.addAction(
+                        " " + group, lambda group=group: self.items_modify_group(group)
+                    )
+            else:
+                submenu = None
 
             submenu2 = Snail_Menu(self.tr_mode)
             modes = [
@@ -527,7 +558,7 @@ class MM_Win(QWidget):
                 submenu2.addAction(" " + mode, lambda index=index: self.items_modify_mode(index))
 
             submenu3 = Snail_Menu(self.tr_collect)
-            libs = [lib.get("name") for lib in MYSET.lib_list if lib.get("type") == "Custom lib"]
+            libs = [name for name, lib in MYSET.libs.items() if lib.get("type") == "Custom lib"]
 
             for index, lib in enumerate(libs):
                 submenu3.addAction(" " + lib, lambda index=index: self.items_collect(index))
@@ -536,12 +567,13 @@ class MM_Win(QWidget):
             menu.addAction(self.tr_capture, self.item_capture_thumbnail)
             menu.addAction(self.tr_custom, self.item_custom_thumbnail)
             menu.addMenu(submenu2)
-            menu.addMenu(submenu)
-            if self.lib_index == 0:
+            if submenu:
+                menu.addMenu(submenu)
+            if self.lib_name == "Project":
                 menu.addAction(self.tr_goNode, self.item_go_node)
                 menu.addAction(self.tr_usedObj, self.go_obj_node)
                 menu.addMenu(submenu3)
-            if self.lib_index > 0:
+            else:
                 menu.addAction(self.tr_assetFolder, self.item_open_folder)
                 menu.addAction(self.tr_createMat, self.items_create_mat)
             menu.addAction(self.tr_delItem, self.items_del)
@@ -632,7 +664,7 @@ class MM_Win(QWidget):
             super().closeEvent(event)
 
     def enterEvent(self, event):
-        if self.enter and self.lib_index == 0:
+        if self.enter and self.lib_name == "Project":
             self.check_mats_changed()
         super().enterEvent(event)
 
@@ -645,7 +677,7 @@ def main_show():
         getChildWin.parent().deleteLater()
     except:
         pass
-    if not ALLSET.verify_sig("fb"):
+    if not ALLSET.verify_sig("mm"):
         return
     MYSET.init_data()
     mywin2 = MM_Win()
@@ -656,7 +688,7 @@ def main_show():
 def callInterface():
     panel = None
     pane_name = "SnailBox_materialManger"
-    if not ALLSET.verify_sig("fb"):
+    if not ALLSET.verify_sig("mm"):
         return
     MYSET.init_data()
     for pane in hou.ui.floatingPaneTabs():

@@ -26,14 +26,14 @@ def get_icon_data(icon_name):
         icon_path = get_icon_path(icon_name)
         if icon_path:
             with open(icon_path, "rb") as f:
-                icon_data = f.read()  # 讀取為二進制數據
+                icon_data = f.read()
                 ICON_DATAS[icon_name] = icon_data
                 return icon_data
         else:
             return None
 
 
-class Snail_icon(hou.qt.Icon):  # hou.Icon
+class Snail_icon(hou.qt.Icon):
     def __init__(self, icon_name, width=30, height=30):
         super().__init__(icon_name, width, height)
 
@@ -56,7 +56,7 @@ class Snail_icon(hou.qt.Icon):  # hou.Icon
         return super().__new__(cls, *args, **kwargs)
 
 
-class Snail_Btn(QPushButton):  # 按钮
+class Snail_Btn(QPushButton):
     def __init__(self, text, tip=None):
         super().__init__(text)
         self.setToolTip(tip)
@@ -68,7 +68,7 @@ class Snail_Btn(QPushButton):  # 按钮
         )
 
 
-class Snail_CheckBox(QCheckBox):  # 勾选框
+class Snail_CheckBox(QCheckBox):
     def __init__(self, name, tip=None):
         super().__init__(name)
         self.setToolTip(tip)
@@ -80,7 +80,7 @@ class Snail_CheckBox(QCheckBox):  # 勾选框
         )
 
 
-class Snail_ComboBox(QComboBox):  # 下拉框
+class Snail_ComboBox(QComboBox):
     def __init__(self, items=[], tip=None, pa=None):
         super().__init__(pa)
         self.setToolTip(tip)
@@ -104,7 +104,7 @@ class Snail_ComboBox(QComboBox):  # 下拉框
         )
 
 
-class Snail_RadioButton(QRadioButton):  # 单选按钮
+class Snail_RadioButton(QRadioButton):
     def __init__(self, name, tip=None):
         super().__init__(name)
         self.setToolTip(tip)
@@ -116,7 +116,7 @@ class Snail_RadioButton(QRadioButton):  # 单选按钮
         )
 
 
-class Snail_Label(QLabel):  # Snail_Label
+class Snail_Label(QLabel):
     def __init__(self, text, pa=None, tip=None):
         super().__init__(text, pa)
         self.setToolTip(tip)
@@ -124,49 +124,48 @@ class Snail_Label(QLabel):  # Snail_Label
             "QLabel {background-color: rgb(45,45,45); border-radius: 5px; padding-left: 4px;}"
             "QLabel:hover {color: rgb(255,163,32); border-radius: 5px; border: 2px solid rgb(255,163,32);}"
             "QLabel {font-family: Microsoft YaHei UI; font-size: 13px;} "
-            #   "QLabel {white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}"
             "QToolTip { background-color: rgb(45,45,45); color: rgb(170,170,170); font-size: 13px; font-family: Microsoft YaHei UI; }"
         )
 
 
-class Snail_LabelA(Snail_Label):  # 标题Label
+class Snail_LabelA(Snail_Label):
     def __init__(self, text, pa=None, tip=None, width=80, height=25):
         super().__init__(text, pa, tip)
         self.setFixedWidth(width)
         self.setFixedHeight(height)
 
 
-class Snail_LabelB(QLabel):  # Snail_Label
+class Snail_LabelB(QLabel):
     def __init__(self, text, size=14, pa=None):
         super().__init__(text, pa)
         font = QtGui.QFont()
-        font.setFamily("Microsoft YaHei UI")  # 设置字体为Arial
-        font.setPointSize(size)  # 设置字体大小为24点
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(size)
         self.setFont(font)
 
 
-class Snail_LabelTip(QLabel):  # Snail_Label
+class Snail_LabelTip(QLabel):
     def __init__(self, text, size=10, pa=None):
         super().__init__(text, pa)
         font = QtGui.QFont()
-        font.setFamily("Microsoft YaHei UI")  # 设置字体为Arial
-        font.setPointSize(size)  # 设置字体大小为24点
+        font.setFamily("Microsoft YaHei UI")
+        font.setPointSize(size)
         self.setFont(font)
         self.setStyleSheet("QLabel {color: rgb(125,125,125);}")
 
 
-class Snail_DropLabel(Snail_Label):  # 拖拽添加Label
+class Snail_DropLabel(Snail_Label):
     def __init__(self, text, pa=None, tip=None, fun=None):
         super().__init__(text, pa, tip)
         self.fun = fun
         self.setAcceptDrops(True)
 
-    def dragEnterEvent(self, event):  # 当前widget是否接受数据
+    def dragEnterEvent(self, event):
         event.acceptProposedAction()
 
-    def dropEvent(self, event):  # 当前拖拽数据释放后的操作
+    def dropEvent(self, event):
         mime_data = event.mimeData()
-        # 提取拖拽数据的类型.
+
         parm_path_data = mime_data.data(hou.qt.mimeType.parmPath)
         parm_path = str(parm_path_data, "utf-8")
         node_path_data = mime_data.data(hou.qt.mimeType.nodePath)
@@ -175,7 +174,7 @@ class Snail_DropLabel(Snail_Label):  # 拖拽添加Label
             self.fun(parm_path, node_path)
 
 
-class Snail_LineEdit(QLineEdit):  # line输入
+class Snail_LineEdit(QLineEdit):
     def __init__(self, text=None, tip=None, pa=None):
         super().__init__(text, pa)
         self.setPlaceholderText(tip)
@@ -200,17 +199,17 @@ class Snail_IntLine(Snail_LineEdit):
         self.setValidator(int_validator)
 
 
-class Snail_DropLine(Snail_LineEdit):  # 拖拽line输入
+class Snail_DropLine(Snail_LineEdit):
     def __init__(self, text=None, tip=None, pa=None, fun=None):
         super().__init__(text, tip, pa)
         self.fun = fun
 
-    def dragEnterEvent(self, event):  # 当前widget是否接受数据
+    def dragEnterEvent(self, event):
         event.acceptProposedAction()
 
-    def dropEvent(self, event):  # 当前拖拽数据释放后的操作
+    def dropEvent(self, event):
         mime_data = event.mimeData()
-        # 提取拖拽数据的类型.
+
         parm_path_data = mime_data.data(hou.qt.mimeType.parmPath)
         parm_path = str(parm_path_data, "utf-8")
         node_path_data = mime_data.data(hou.qt.mimeType.nodePath)
@@ -219,7 +218,7 @@ class Snail_DropLine(Snail_LineEdit):  # 拖拽line输入
             self.fun(parm_path, node_path)
 
 
-class Snail_IconBtn(QToolButton):  # ICON小按钮
+class Snail_IconBtn(QToolButton):
     def __init__(self, icon_name, tip=None, pa=None):
         super().__init__(pa)
         icon = Snail_icon(icon_name)
@@ -236,7 +235,7 @@ class Snail_IconBtn(QToolButton):  # ICON小按钮
         self.resize(24, 24)
 
 
-class Snail_IconBtn_data(QToolButton):  # 数据ICON小按钮
+class Snail_IconBtn_data(QToolButton):
     def __init__(self, icon_name, tip=None, pa=None):
         super().__init__(pa)
         icon_data = get_icon_data(icon_name)
@@ -258,7 +257,7 @@ class Snail_IconBtn_data(QToolButton):  # 数据ICON小按钮
         self.resize(24, 24)
 
 
-class Snail_IconBtn2(QToolButton):  # 切换ICON小按钮
+class Snail_IconBtn2(QToolButton):
     def __init__(self, icon_name1, icon_name2, tip=None, pa=None):
         super().__init__(pa)
         icon = QtGui.QIcon()
@@ -284,7 +283,7 @@ class Snail_IconBtn2(QToolButton):  # 切换ICON小按钮
         self.setCheckable(True)
 
 
-class Snail_IconBtn3(Snail_IconBtn):  # 预览图ICON小按钮
+class Snail_IconBtn3(Snail_IconBtn):
     def __init__(self, icon_name, tip=None, pa=None):
         super().__init__(icon_name, tip, pa)
         self.setStyleSheet(
@@ -294,7 +293,7 @@ class Snail_IconBtn3(Snail_IconBtn):  # 预览图ICON小按钮
         )
 
 
-class Snail_SpinBox(QSpinBox):  # 数字输入框
+class Snail_SpinBox(QSpinBox):
     def __init__(self, pre=None, suf=None, min=0, max=100, width=80):
         super().__init__()
         if pre:
@@ -313,7 +312,7 @@ class Snail_SpinBox(QSpinBox):  # 数字输入框
         self.setFixedHeight(25)
 
 
-class Snail_ColorBtn(QPushButton):  # 颜色按钮
+class Snail_ColorBtn(QPushButton):
     def __init__(self, pa, width=50):
         super().__init__()
         self.pa = pa
@@ -323,7 +322,6 @@ class Snail_ColorBtn(QPushButton):  # 颜色按钮
               QToolTip { background-color: rgb(45,45,45); color: rgb(170,170,170); font-size: 14px; font-family: Microsoft YaHei UI;}"""
         self.setStyleSheet(style + self.style2)
         self.setFixedWidth(width)
-        # self.resize(30, 30)
 
     def changeColor(self, color=None):
         if color:
@@ -356,8 +354,7 @@ class Snail_ColorBtn(QPushButton):  # 颜色按钮
         self.changeColor(color)
 
 
-##################
-class Snail_IconBtn_bz(Snail_IconBtn):  # 视频链接
+class Snail_IconBtn_bz(Snail_IconBtn):
     def __init__(self):
         super().__init__("snail_bz", "Bilibli")
         self.clicked.connect(self.go_b_web)
@@ -379,7 +376,7 @@ class Snail_IconBtn_bz(Snail_IconBtn):  # 视频链接
             self.setToolTip("YouTube")
 
 
-class Snail_IconBtn_help(Snail_IconBtn):  # 在线帮助
+class Snail_IconBtn_help(Snail_IconBtn):
     def __init__(self):
         super().__init__("snail_help", "Online documents")
         self.clicked.connect(self.go_help)
@@ -473,26 +470,22 @@ class Snail_Table(QTableWidget):
         self.setGridStyle(QtCore.Qt.NoPen)
         self.setAlternatingRowColors(True)
         palette = self.palette()
-        palette.setColor(palette.AlternateBase, QtGui.QColor(29, 29, 29))  # 偶数行背景色
+        palette.setColor(palette.AlternateBase, QtGui.QColor(29, 29, 29))
         self.setPalette(palette)
 
 
 class Snail_List(QListWidget):
     def __init__(self, pa=None):
         super().__init__(pa)
-        # self.setAlternatingRowColors(True)
-        # palette = self.palette()
-        # palette.setColor(palette.AlternateBase, QtGui.QColor(29, 29, 29))  # 偶数行背景色
-        # self.setPalette(palette)
-        # self.setContentsMargins(2)
+
         self.setGridSize(QtCore.QSize(0, 27))
+        self.setTextElideMode(QtCore.Qt.ElideMiddle)
         self.setStyleSheet(
             "QListWidget{background: transparent; padding: 2px;}"
             "QListWidget::item{height: 25px; background-color: rgba(45,45,45,200); border-radius: 5px;}"
             "QListWidget{font-family: Microsoft YaHei UI; font-size: 13px;}"
             "QListWidget::item:hover{color: rgb(255,163,32);background-color: rgb(100,100,100);}"
             "QListWidget::item:selected{color: rgb(255,163,32); background-color: rgb(100,80,40);}"
-            # "QListWidget::item:focus{color: rgb(255,163,32); background-color: rgb(100,80,40);}"
         )
 
 
@@ -516,7 +509,7 @@ class Snail_Menu(QMenu):
         self.setStyleSheet(menu_style)
 
 
-class Snail_ImgButton(QToolButton):  # 主按钮
+class Snail_ImgButton(QToolButton):
     def __init__(self, parent, thumbsize, name):
         super().__init__(parent)
         self.name = name
@@ -568,6 +561,7 @@ class Snail_assetsViewer(QWidget):
     def __init__(self):
         super().__init__()
         self.assets = []
+        self.thumb_dir = ""
         self.setObjectName("Snail_assetsViewer")
         self.lb = QLabel(self)
         self.lb.setScaledContents(True)
@@ -582,7 +576,8 @@ class Snail_assetsViewer(QWidget):
         self.tb_folder = self.sub_btn_folder()
         self.tb_bigView = self.sub_btn_bigView()
 
-    def update(self, assets=[]):
+    def update(self, assets=[], thumbPath=""):
+        self.thumb_dir = thumbPath
         self.assets = list(assets)
         self.current_index = 0
         self.current_thumb = ""
@@ -639,8 +634,11 @@ class Snail_assetsViewer(QWidget):
             miss_file = f"{ALLSET.sbox_path}/file/tex/asset_miss.jpg"
             self.current_miss = True
             return miss_file
-        dir = os.path.dirname(ex_path)
-        thumb_dir = f"{dir}/thumbnail"
+        if self.thumb_dir:
+            thumb_dir = self.thumb_dir
+        else:
+            dir = os.path.dirname(ex_path)
+            thumb_dir = f"{dir}/thumbnail"
         file_id = get_file_id2(ex_path)
         if file_id:
             thumb_path = f"{thumb_dir}/{file_id}.jpg"
@@ -671,13 +669,12 @@ class Snail_assetsViewer(QWidget):
             return file_info
 
     def resizeEvent(self, event):
-        # print("resizeEvent")
         width = self.size().width()
         height = self.size().height()
         if not width or not height:
             return
         ratio = width / height
-        if ratio > self.img_ratio:  # 以高度为限制
+        if ratio > self.img_ratio:
             self.lb.move(0, 0)
             w = height * self.img_ratio
             self.lb.resize(w, height)
@@ -689,7 +686,7 @@ class Snail_assetsViewer(QWidget):
             else:
                 self.lw_assets.resize(30, height)
                 self.lw_assets.move(width - 30, 0)
-        else:  # 以宽度为限制
+        else:
             h = width / self.img_ratio
             self.lb.resize(width, h)
             self.lw_assets.setHidden(False)
@@ -702,14 +699,14 @@ class Snail_assetsViewer(QWidget):
                 self.lw_assets.move(width - 30, 0)
         return super().resizeEvent(event)
 
-    def sub_btn_folder(self):  # 跳到材质节点
+    def sub_btn_folder(self):
         tb_folder = Snail_IconBtn("BUTTONS_folder", "Asset folder", pa=self.lb)
         tb_folder.move(2, 2)
         tb_folder.clicked.connect(lambda: self.open_file_explorer())
         tb_folder.setHidden(not self.inter)
         return tb_folder
 
-    def sub_btn_bigView(self):  # 跳到材质节点
+    def sub_btn_bigView(self):
         tb_bigView = Snail_IconBtn("snail_big_viewer", "Zoom view", pa=self.lb)
         tb_bigView.move(2, 28)
         tb_bigView.setHidden(not self.inter)
