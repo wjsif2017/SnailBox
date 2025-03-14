@@ -6,11 +6,11 @@
  a single file. -->
 
   <toolshelf name="snail_box" label="Snail Box">
+    <memberTool name="snail_materialManger"/>
     <memberTool name="snail_ae"/>
     <memberTool name="snail_flipbook"/>
     <memberTool name="snail_assetsManger"/>
     <memberTool name="snail_textureBrowser"/>
-    <memberTool name="snail_materialManger"/>
     <memberTool name="snail_thumb"/>
     <memberTool name="snail_thumb_clear"/>
   </toolshelf>
