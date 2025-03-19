@@ -500,12 +500,10 @@ class MM_Win(QWidget):
             display_status(f"Snail_error_mm: flip_info _ {e}")
 
     def updateMenu(self):
-
         self.ui.lw_menu1.clear()
         self.ui.lw_menu1.setIconSize(QtCore.QSize(40, 40))
         self.ui.lw_menu1.setGridSize(QtCore.QSize(70, 72))
         all_libs = {"Project": MYSET.lib_pj, **MYSET.libs}
-        index = 0
         for one in all_libs.values():
             icon_num = one.get("icon")
             name = one.get("name")
@@ -514,9 +512,9 @@ class MM_Win(QWidget):
             item.setSizeHint(QtCore.QSize(70, 60))
             item.setText(name)
             item.setData(QtCore.Qt.UserRole, name)
-            index += 1
-
             self.ui.lw_menu1.addItem(item)
+            if name == self.lib_name:
+                self.ui.lw_menu1.setCurrentItem(item)
         if len(all_libs) == 1:
             icon = QtGui.QIcon(f"{ALLSET.sbox_path}/file/icon02/10042.svg")
             item = QListWidgetItem(icon, "")
@@ -524,7 +522,6 @@ class MM_Win(QWidget):
             item.setText("Add lib")
             item.setData(QtCore.Qt.UserRole, "Add lib")
             self.ui.lw_menu1.addItem(item)
-        self.ui.lw_menu1.setCurrentRow(0)
 
     def rightClickContext(self, position=None):
         menu = Snail_Menu()
