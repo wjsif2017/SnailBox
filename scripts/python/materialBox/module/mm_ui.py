@@ -323,11 +323,23 @@ class Ui_Dialog(QDialog):
         self.cb_copyAssets = Snail_CheckBox("Copy assets to lib when Collecting material")
         self.cb_nodebg = Snail_CheckBox("Set node background for crate material")
         self.cb_gsgTri = Snail_CheckBox("Set triplanar texture for GSG material")
+        layout_01_1 = QHBoxLayout()
+        self.lb_gsgMat = Snail_Label("GSG material type")
+        self.cr_gsgMat_0 = Snail_RadioButton("Karma", "GSG Karma")
+        self.cr_gsgMat_1 = Snail_RadioButton("Redshift", "GSG Redshift")
         self.cb_copyAssets.toggled.connect(self.toggle_copy)
         self.cb_nodebg.toggled.connect(self.toggle_setBg)
         self.cb_gsgTri.toggled.connect(self.toggle_gsgTri)
+        self.cr_gsgMat_0.clicked.connect(self.change_gsgMat)
+        self.cr_gsgMat_1.clicked.connect(self.change_gsgMat)
         layout_01.addWidget(self.cb_copyAssets)
         layout_01.addWidget(self.cb_nodebg)
+        line = Snail_line()
+        layout_01.addWidget(line)
+        layout_01_1.addWidget(self.lb_gsgMat)
+        layout_01_1.addWidget(self.cr_gsgMat_0)
+        layout_01_1.addWidget(self.cr_gsgMat_1)
+        layout_01.addLayout(layout_01_1)
         layout_01.addWidget(self.cb_gsgTri)
 
         layout_main0 = QVBoxLayout()
@@ -484,6 +496,7 @@ class Ui_Dialog(QDialog):
         self.cb_copyAssets.setChecked(MYSET.copy_option)
         self.cb_nodebg.setChecked(MYSET.setBg)
         self.cb_gsgTri.setChecked(MYSET.gsg_tri)
+        self.cr_gsgMat_0.setChecked(MYSET.gsg_mat == "Karma")
 
     def refresh_other_node(self):
         self.slw_other_nodes.clear()
@@ -585,6 +598,7 @@ class Ui_Dialog(QDialog):
                 tips = MYSET.lib_type[lib_type].get("tip_en")
             if lib_type == "Custom lib":
                 self.sle_libPath.setDisabled(True)
+                self.sle_libPath.setText("snailBox_this")
             else:
                 self.sle_libPath.setDisabled(False)
         self.t_tips.update_tips(tips)
@@ -734,6 +748,14 @@ class Ui_Dialog(QDialog):
         MYSET.gsg_tri = self.cb_gsgTri.isChecked()
         self.save_set()
 
+    def change_gsgMat(self):
+        if self.cr_gsgMat_0.isChecked():
+            MYSET.gsg_mat = "Karma"
+        else:
+            MYSET.gsg_mat = "Redshift"
+        self.save_set()
+        self.update_win()
+
     def add_other_node(self, parm_path, node_path):
         if parm_path:
             if ALLSET.language:
@@ -820,6 +842,7 @@ class Ui_Dialog(QDialog):
             self.cb_copyAssets.setText(self.tr("Copy assets to lib when Collecting material"))
             self.cb_nodebg.setText(self.tr("Set node background for crate material"))
             self.cb_gsgTri.setText(self.tr("Set triplanar texture for GSG material"))
+            self.lb_gsgMat.setText(self.tr("GSG material type"))
             self.sb_libDel.setText(self.tr("Delete"))
             self.sb_libMod.setText(self.tr("Modify"))
             self.sb_libRescan.setText(self.tr("Update"))
@@ -837,7 +860,7 @@ class Ui_Dialog(QDialog):
 
     def update_win(self):
         self.pa.updateMenu()
-        self.pa.menu_toggle()
+        self.pa.init_data()
 
     def main_show(self):
         self.init_set()
