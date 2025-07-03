@@ -36,7 +36,8 @@ class MM_Win(QWidget):
         self.setLayout(mainlayout)
         self.resize(780, 650)
         self.setWindowTitle("Snail Material Manger")
-        self.setWindowIcon(QtGui.QIcon(ALLSET.sbox_path + "/icons/SnailBox.svg"))
+        self.setWindowIcon(QtGui.QIcon(
+            ALLSET.sbox_path + "/icons/SnailBox.svg"))
         self.ui.lw_view.setStyleSheet(
             "QListWidget::item:hover{background-color:rgba(0, 0, 0, 0);}"
             "QListWidget::item:selected{border: 2px solid rgb(255,163,32);}"
@@ -91,10 +92,12 @@ class MM_Win(QWidget):
         self.cb_group.setFixedWidth(200)
         self.ui.layout_top.addWidget(self.cb_group)
 
-        self.tb_auto = Snail_IconBtn("snail_matThumb1", "Thumb with auto create")
+        self.tb_auto = Snail_IconBtn(
+            "snail_matThumb1", "Thumb with auto create")
         self.tb_auto.clicked.connect(self.create_thumbnail_force)
         self.ui.hl_2.addWidget(self.tb_auto)
-        self.tb_capture = Snail_IconBtn("snail_matThumb2", "Thumb with capture")
+        self.tb_capture = Snail_IconBtn(
+            "snail_matThumb2", "Thumb with capture")
         self.tb_capture.clicked.connect(self.item_capture_thumbnail)
         self.ui.hl_2.addWidget(self.tb_capture)
         self.tb_custom = Snail_IconBtn("snail_matThumb3", "Thumb with custom")
@@ -106,16 +109,19 @@ class MM_Win(QWidget):
         self.tb_delete = Snail_IconBtn("COMMON_delete", "Delete")
         self.tb_delete.clicked.connect(self.items_del)
         self.ui.hl_2.addWidget(self.tb_delete)
-        self.tb_clear = Snail_IconBtn("BUTTONS_clear", "Clear unused Materials")
+        self.tb_clear = Snail_IconBtn(
+            "BUTTONS_clear", "Clear unused Materials")
         self.tb_clear.clicked.connect(self.del_unused)
         self.ui.hl_2.addWidget(self.tb_clear)
         self.tb_fav = Snail_IconBtn2("snail_fav1", "snail_fav2", "Solo fav")
         self.tb_fav.clicked.connect(self.solo_fav)
         self.ui.hl_2.addWidget(self.tb_fav)
-        self.tb_ignore = Snail_IconBtn2("snail_ignore1", "snail_ignore2", "Toggle ignore")
+        self.tb_ignore = Snail_IconBtn2(
+            "snail_ignore1", "snail_ignore2", "Toggle ignore")
         self.tb_ignore.clicked.connect(self.show_ignore)
         self.ui.hl_2.addWidget(self.tb_ignore)
-        self.tb_flip = Snail_IconBtn2("snail_info_flip1", "snail_info_flip2", "Flip info")
+        self.tb_flip = Snail_IconBtn2(
+            "snail_info_flip1", "snail_info_flip2", "Flip info")
         self.tb_flip.clicked.connect(self.flip_info)
         self.ui.hl_2.addWidget(self.tb_flip)
 
@@ -125,7 +131,8 @@ class MM_Win(QWidget):
         self.ui.lw_view.itemDoubleClicked.connect(self.item_double_click)
         self.ui.lw_view.verticalScrollBar().valueChanged.connect(self.on_scroll)
         self.ui.lw_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.ui.lw_view.customContextMenuRequested.connect(self.rightClickContext)
+        self.ui.lw_view.customContextMenuRequested.connect(
+            self.rightClickContext)
 
     def init_data(self):
         if not self.lib_name or self.lib_name == "Project":
@@ -283,7 +290,8 @@ class MM_Win(QWidget):
                 msg = "请选择一个资产" if ALLSET.language else "Please select one item"
                 hou.ui.displayMessage(msg)
                 return
-            ids = [btnItem.data(QtCore.Qt.UserRole) for btnItem in sel_btnItems]
+            ids = [btnItem.data(QtCore.Qt.UserRole)
+                   for btnItem in sel_btnItems]
             return func(self, ids, *args, **kwargs)
 
         return wrapper
@@ -340,12 +348,14 @@ class MM_Win(QWidget):
             hou.ui.displayMessage("有些材质暂不支持预览图生成", buttons=("OK",))
 
     def create_thumbnail_smart(self):
-        mats = [item for item in self.filter_items.values() if item.thumbnail_status != 1]
+        mats = [item for item in self.filter_items.values()
+                if item.thumbnail_status != 1]
         self.create_thumbnail(mats)
 
     @current_ids
     def create_thumbnail_force(self, ids):
-        items = [self.filter_items.get(id) for id in ids if self.filter_items.get(id)]
+        items = [self.filter_items.get(id)
+                 for id in ids if self.filter_items.get(id)]
         self.create_thumbnail(items)
 
     @current_item
@@ -507,7 +517,8 @@ class MM_Win(QWidget):
         for one in all_libs.values():
             icon_num = one.get("icon")
             name = one.get("name")
-            icon = QtGui.QIcon(f"{ALLSET.sbox_path}/file/icon02/{icon_num}.svg")
+            icon = QtGui.QIcon(
+                f"{ALLSET.sbox_path}/file/icon02/{icon_num}.svg")
             item = QListWidgetItem(icon, "")
             item.setSizeHint(QtCore.QSize(70, 60))
             item.setText(name)
@@ -531,11 +542,14 @@ class MM_Win(QWidget):
             if self.lib.lib_type != "GSG materials":
                 submenu = Snail_Menu(self.tr_changeGroup)
                 submenu.addAction(self.tr_addGroup, self.items_add_group)
-                submenu.addAction(self.tr_removeGroup, lambda: self.items_modify_group(None))
+                submenu.addAction(self.tr_removeGroup,
+                                  lambda: self.items_modify_group(None))
                 groups = self.lib.custom_groups[::-1]
                 for group in groups:
                     submenu.addAction(
-                        " " + group, lambda group=group: self.items_modify_group(group)
+                        " " +
+                        group, lambda group=group: self.items_modify_group(
+                            group)
                     )
             else:
                 submenu = None
@@ -552,13 +566,16 @@ class MM_Win(QWidget):
             ]
 
             for index, mode in enumerate(modes):
-                submenu2.addAction(" " + mode, lambda index=index: self.items_modify_mode(index))
+                submenu2.addAction(
+                    " " + mode, lambda index=index: self.items_modify_mode(index))
 
             submenu3 = Snail_Menu(self.tr_collect)
-            libs = [name for name, lib in MYSET.libs.items() if lib.get("type") == "Custom lib"]
+            libs = [name for name, lib in MYSET.libs.items(
+            ) if lib.get("type") == "Custom lib"]
 
-            for index, lib in enumerate(libs):
-                submenu3.addAction(" " + lib, lambda index=index: self.items_collect(index))
+            for lib in libs:
+                submenu3.addAction(
+                    " " + lib, lambda lib=lib: self.items_collect(lib))
 
             menu.addAction(self.tr_auto, self.create_thumbnail_force)
             menu.addAction(self.tr_capture, self.item_capture_thumbnail)
@@ -587,9 +604,11 @@ class MM_Win(QWidget):
     def load_language(self):
         try:
             if ALLSET.language:
-                self.translator.load(f"{ALLSET.sbox_path}/scripts/python/materialBox/tr_zh.pm")
+                self.translator.load(
+                    f"{ALLSET.sbox_path}/scripts/python/materialBox/tr_zh.pm")
             else:
-                self.translator.load(f"{ALLSET.sbox_path}/scripts/python/materialBox/tr_en.pm")
+                self.translator.load(
+                    f"{ALLSET.sbox_path}/scripts/python/materialBox/tr_en.pm")
             self.retranslateUi()
             self.tb_bz.toggle_language(ALLSET.language)
         except:
@@ -653,7 +672,8 @@ class MM_Win(QWidget):
         try:
             self.lib.update_lib_item()
             houMainWindow = hou.qt.mainWindow()
-            getChildWin = houMainWindow.findChild(QGraphicsView, "Snail_imgViewer")
+            getChildWin = houMainWindow.findChild(
+                QGraphicsView, "Snail_imgViewer")
             if getChildWin:
                 getChildWin.setVisible(False)
                 super.closeEvent(event)
