@@ -1,8 +1,10 @@
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from hutil.Qt.QtCore import *
+from hutil.Qt.QtGui import *
+from hutil.Qt.QtWidgets import *
 from utils import *
 from .mm_set import MYSET
+import os
+import hou
 
 
 class Ui_Snail_MM(QWidget):
@@ -15,7 +17,6 @@ class Ui_Snail_MM(QWidget):
         font.setFamily("Microsoft YaHei UI")
         font.setBold(False)
         font.setItalic(False)
-        font.setWeight(50)
         Snail_MM.setFont(font)
         Snail_MM.setAutoFillBackground(False)
         Snail_MM.setStyleSheet(
@@ -43,7 +44,8 @@ class Ui_Snail_MM(QWidget):
         self.leftMenu.setSpacing(5)
         self.leftMenu.setObjectName("leftMenu")
         self.leftMenu.setContentsMargins(0, 0, 0, 0)
-        self.verticalSpacer_2 = QSpacerItem(20, 38, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.verticalSpacer_2 = QSpacerItem(
+            20, 38, QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.leftMenu.addItem(self.verticalSpacer_2)
 
@@ -54,7 +56,6 @@ class Ui_Snail_MM(QWidget):
         font1.setPointSize(8)
         font1.setBold(False)
         font1.setItalic(False)
-        font1.setWeight(50)
         self.lw_menu1.setFont(font1)
         self.lw_menu1.setContextMenuPolicy(Qt.CustomContextMenu)
         self.lw_menu1.setStyleSheet("")
@@ -82,7 +83,8 @@ class Ui_Snail_MM(QWidget):
 
         self.leftMenu.addWidget(self.lw_menu1)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.verticalSpacer_3 = QSpacerItem(
+            20, 40, QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.leftMenu.addItem(self.verticalSpacer_3)
 
@@ -113,7 +115,8 @@ class Ui_Snail_MM(QWidget):
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.splitter_v = QSplitter(self.verticalLayoutWidget_2)
         self.splitter_v.setObjectName("splitter_v")
-        self.splitter_v.setStyleSheet("QListWidget {background-color: rgba(0,0,0,0);}")
+        self.splitter_v.setStyleSheet(
+            "QListWidget {background-color: rgba(0,0,0,0);}")
         self.splitter_v.setOrientation(Qt.Vertical)
         self.verticalLayoutWidget_3 = QWidget(self.splitter_v)
         self.verticalLayoutWidget_3.setObjectName("verticalLayoutWidget_3")
@@ -140,7 +143,6 @@ class Ui_Snail_MM(QWidget):
         font2.setFamily("Microsoft YaHei UI")
         font2.setBold(True)
         font2.setItalic(False)
-        font2.setWeight(75)
         self.pb_progress.setFont(font2)
         self.pb_progress.setAutoFillBackground(False)
         self.pb_progress.setStyleSheet(
@@ -182,10 +184,11 @@ class Ui_Snail_MM(QWidget):
         self.splitter.setChildrenCollapsible(True)
         self.gb_info = QGroupBox(self.splitter)
         self.gb_info.setObjectName("gb_info")
-        sizePolicy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.gb_info.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.gb_info.sizePolicy().hasHeightForWidth())
         self.gb_info.setSizePolicy(sizePolicy)
         self.gb_info.setMinimumSize(QSize(0, 0))
         font3 = QFont()
@@ -226,7 +229,8 @@ class Ui_Snail_MM(QWidget):
         self.splitter.addWidget(self.gb_info)
         self.gb_asset = QGroupBox(self.splitter)
         self.gb_asset.setObjectName("gb_asset")
-        sizePolicy.setHeightForWidth(self.gb_asset.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.gb_asset.sizePolicy().hasHeightForWidth())
         self.gb_asset.setSizePolicy(sizePolicy)
         self.gb_asset.setMinimumSize(QSize(0, 0))
         self.gb_asset.setFont(font3)
@@ -299,14 +303,16 @@ class Ui_Dialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.pa = parent
-        self.setWindowIcon(QtGui.QIcon(ALLSET.sbox_path + "/icons/SnailBox.svg"))
-        self.setWindowTitle("SnailBox Texture Browser Settings")
+        self.setWindowIcon(QIcon(ALLSET.sbox_path + "/icons/SnailBox.svg"))
+        self.setWindowTitle("SnailBox Material Manger Settings")
         self.setStyleSheet(
             "*{background-color: rgb(35, 35, 39);}" "*:hover{color: rgb(255, 191, 0);}"
         )
         self.resize(640, 560)
-        self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint)
-
+        self.setWindowFlags(
+            self.windowFlags() & ~Qt.WindowContextHelpButtonHint
+            | Qt.WindowCloseButtonHint
+        )
         self.init_ui()
 
     def init_ui(self):
@@ -317,12 +323,17 @@ class Ui_Dialog(QDialog):
             "QTabBar {font-family: Microsoft YaHei UI; font-size: 14px;}"
         )
         layout_main.addWidget(self.stw)
-        spacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Expanding)
+        spacer = QSpacerItem(0, 0, QSizePolicy.Expanding,
+                             QSizePolicy.Expanding)
 
+        # region tab0
         layout_01 = QVBoxLayout()
-        self.cb_copyAssets = Snail_CheckBox("Copy assets to lib when Collecting material")
-        self.cb_nodebg = Snail_CheckBox("Set node background for crate material")
-        self.cb_gsgTri = Snail_CheckBox("Set triplanar texture for GSG material")
+        self.cb_copyAssets = Snail_CheckBox(
+            "Copy assets to lib when Collecting material")
+        self.cb_nodebg = Snail_CheckBox(
+            "Set node background for crate material")
+        self.cb_gsgTri = Snail_CheckBox(
+            "Set triplanar texture for GSG material")
         layout_01_1 = QHBoxLayout()
         self.lb_gsgMat = Snail_Label("GSG material type")
         self.cr_gsgMat_0 = Snail_RadioButton("Karma", "GSG Karma")
@@ -350,7 +361,9 @@ class Ui_Dialog(QDialog):
         self.s_tab_0.setLayout(layout_main0)
         self.stw.addTab(self.s_tab_0, "")
         self.stw.setTabText(self.stw.indexOf(self.s_tab_0), "Options")
+        # endregion
 
+        # region tab1
         layout_11 = QVBoxLayout()
         self.stw_libList = Snail_Table(self)
         self.stw_libList.setColumnCount(2)
@@ -360,7 +373,7 @@ class Ui_Dialog(QDialog):
         layout_12 = QHBoxLayout()
         self.scb_lib_type = Snail_ComboBox()
         self.scb_lib_type.activated.connect(self.refresh_lib_tips)
-
+        # self.scb_lib_type.currentIndexChanged.connect(self.refresh_lib_tips)
         self.scb_index = Snail_ComboBox()
         self.scb_icon = Snail_ComboBox()
         self.sle_libName = Snail_LineEdit(tip="Library name")
@@ -376,7 +389,8 @@ class Ui_Dialog(QDialog):
         layout_13 = QHBoxLayout()
         self.sle_libPath = Snail_LineEdit("snailBox_this")
         self.sle_libPath.setDisabled(True)
-        self.sb_selPath = Snail_IconBtn("BUTTONS_chooser_folder", "Select lib path")
+        self.sb_selPath = Snail_IconBtn(
+            "BUTTONS_chooser_folder", "Select lib path")
         self.sb_selPath.clicked.connect(self.sel_lib_floder)
         layout_13.addWidget(self.sle_libPath)
         layout_13.addWidget(self.sb_selPath)
@@ -414,7 +428,9 @@ class Ui_Dialog(QDialog):
         self.s_tab_1.setLayout(layout_main1)
         self.stw.addTab(self.s_tab_1, "")
         self.stw.setTabText(self.stw.indexOf(self.s_tab_1), "Add Library")
+        # endregion
 
+        # region tab2
         layout_21 = QVBoxLayout()
         self.slw_other_nodes = Snail_List(self)
         layout_21.addWidget(self.slw_other_nodes)
@@ -446,7 +462,9 @@ class Ui_Dialog(QDialog):
         self.s_tab_2.setLayout(layout_main2)
         self.stw.addTab(self.s_tab_2, "")
         self.stw.setTabText(self.stw.indexOf(self.s_tab_2), "Other Node")
+        # endregion
 
+        # region tab3
         layout_31 = QVBoxLayout()
         self.slw_fliter_nodes = Snail_List(self)
         layout_31.addWidget(self.slw_fliter_nodes)
@@ -478,10 +496,11 @@ class Ui_Dialog(QDialog):
         self.s_tab_3.setLayout(layout_main3)
         self.stw.addTab(self.s_tab_3, "")
         self.stw.setTabText(self.stw.indexOf(self.s_tab_3), "Filter Node")
+        # endregion
 
         self.setLayout(layout_main)
 
-    def init_set(self):
+    def init_set(self):  # 初始化界面
         self.refresh_option()
         self.refresh_other_node()
         self.refresh_filter_node()
@@ -492,24 +511,24 @@ class Ui_Dialog(QDialog):
         self.refresh_other_tips()
         self.load_language()
 
-    def refresh_option(self):
+    def refresh_option(self):  # 刷新设置选项
         self.cb_copyAssets.setChecked(MYSET.copy_option)
         self.cb_nodebg.setChecked(MYSET.setBg)
         self.cb_gsgTri.setChecked(MYSET.gsg_tri)
         self.cr_gsgMat_0.setChecked(MYSET.gsg_mat == "Karma")
 
-    def refresh_other_node(self):
+    def refresh_other_node(self):  # 刷新一键创建节点列表
         self.slw_other_nodes.clear()
         for one in MYSET.other_nodes:
             self.slw_other_nodes.addItem(one)
 
-    def refresh_filter_node(self):
+    def refresh_filter_node(self):  # 刷新自定义节点参数
         self.slw_fliter_nodes.clear()
         for one in MYSET.filter_nodes:
             self.slw_fliter_nodes.addItem(one)
 
-    def refresh_table_libList(self):
-        self.stw_libList.clearContents()
+    def refresh_table_libList(self):  # 刷新库列表
+        self.stw_libList.clearContents()  # 清理表格内容
         self.stw_libList.setRowCount(len(MYSET.lib_sort))
         for index, lib_name in enumerate(MYSET.lib_sort):
             lib_dict = MYSET.libs.get(lib_name)
@@ -519,7 +538,7 @@ class Ui_Dialog(QDialog):
             self.stw_libList.setItem(index, 0, QTableWidgetItem(lib_name))
             self.stw_libList.setItem(index, 1, QTableWidgetItem(path))
 
-    def refresh_add_cb(self):
+    def refresh_add_cb(self):  # 添加库的下拉列表
         self.scb_lib_type.clear()
         self.scb_icon.clear()
         for one in MYSET.lib_type.keys():
@@ -528,12 +547,12 @@ class Ui_Dialog(QDialog):
         icons = os.listdir(icon_folder)
         for icon in icons:
             icon_num = icon.split(".")[0]
-            icon = QtGui.QIcon(f"{icon_folder}/{icon_num}.svg")
+            icon = QIcon(f"{icon_folder}/{icon_num}.svg")
             self.scb_icon.addItem(icon, icon_num)
         self.scb_lib_type.setCurrentIndex(0)
         self.scb_icon.setCurrentIndex(0)
 
-    def refresh_index_cb(self):
+    def refresh_index_cb(self):  # 添加库的下拉列表
         self.scb_index.clear()
         num = len(MYSET.lib_sort)
         for i in range(num + 1):
@@ -541,7 +560,7 @@ class Ui_Dialog(QDialog):
             self.scb_index.addItem(index)
         self.scb_index.setCurrentIndex(num)
 
-    def refresh_lib_set(self):
+    def refresh_lib_set(self):  # 点击lib_item刷新库选项设置
         self.refresh_lib_tips(-1)
         index = self.stw_libList.currentRow()
         lib_name = self.sel_lib_name()
@@ -555,7 +574,7 @@ class Ui_Dialog(QDialog):
         lib_index = str(index + 1)
         self.scb_index.setCurrentText(lib_index)
 
-    def sel_lib_floder(self):
+    def sel_lib_floder(self):  # 选择库文件夹
         path = MYSET.lib_path
         path_abs = hou.text.expandString(path)
         if not os.path.isdir(path_abs):
@@ -575,7 +594,7 @@ class Ui_Dialog(QDialog):
                 packPath = packPath.replace("\\", "/")
                 self.sle_libPath.setText(packPath)
 
-    def refresh_lib_tips(self, option=0):
+    def refresh_lib_tips(self, option=0):  # 改变lib
         tips = []
         if option == -1:
             if ALLSET.language:
@@ -603,7 +622,7 @@ class Ui_Dialog(QDialog):
                 self.sle_libPath.setDisabled(False)
         self.t_tips.update_tips(tips)
 
-    def refresh_other_tips(self):
+    def refresh_other_tips(self):  # 改变lib
         if ALLSET.language:
             tips2 = [
                 "* 其它材质类型: 工具不能自动检测出一些材质节点类型,可以手动添加材质类型",
@@ -639,13 +658,13 @@ class Ui_Dialog(QDialog):
         if lib_name:
             return lib_name
 
-    def update_lib(self):
+    def update_lib(self):  # 更新库
         lib_name = self.sel_lib_name()
         if not lib_name:
             return
         MYSET.update_lib(lib_name)
 
-    def del_lib(self):
+    def del_lib(self):  # 删除库
         lib_name = self.sel_lib_name()
         if not lib_name:
             return
@@ -654,12 +673,12 @@ class Ui_Dialog(QDialog):
         self.refresh_table_libList()
         self.update_win()
 
-    def mod_lib(self):
+    def mod_lib(self):  # 修改库
         lib_name = self.sel_lib_name()
         if not lib_name:
             return
-        MYSET.del_lib(lib_name)
         lib_json = MYSET.libs.get(lib_name)
+        MYSET.del_lib(lib_name)
         before_name = lib_json.get("name")
         before_type = lib_json.get("type")
 
@@ -689,15 +708,16 @@ class Ui_Dialog(QDialog):
             lib_json["icon"] = lib_icon_index
             lib_json["path"] = lib_path
             MYSET.save_lib_json(lib_name, lib_json)
-            MYSET.lib_sort.remove(lib_name)
+            if lib_name in MYSET.lib_sort:  # 删除旧库
+                MYSET.lib_sort.remove(lib_name)
             MYSET.lib_sort.insert(new_index, lib_name)
         except Exception as e:
-            display_status(f"Snail_error_usf: mod_lib _ {e}", 1)
+            display_status(f"Snail_error_mmui: mod_lib _ {e}", 1)
         MYSET.scan_libs()
         self.refresh_table_libList()
         self.update_win()
 
-    def add_lib(self):
+    def add_lib(self):  # 添加库
         lib_type = self.scb_lib_type.currentText()
         lib_icon_index = self.scb_icon.currentText()
         lib_name = self.sle_libName.text()
@@ -707,7 +727,7 @@ class Ui_Dialog(QDialog):
             lib_path = self.sle_libPath.text()
             lib_path = hou.text.expandString(lib_path)
         lib_index = int(self.scb_index.currentText()) - 1
-
+        # 排除空输入
         if not lib_name or not lib_path:
             if ALLSET.language:
                 msg = "请输入库名称和路径"
@@ -716,6 +736,7 @@ class Ui_Dialog(QDialog):
             hou.ui.displayMessage(msg)
             return
 
+        # 排除重复lib_name
         if lib_name in MYSET.lib_sort:
             if ALLSET.language:
                 msg2 = f"{lib_name}库已存在"
@@ -736,19 +757,19 @@ class Ui_Dialog(QDialog):
             self.refresh_table_libList()
             self.update_win()
 
-    def toggle_setBg(self):
+    def toggle_setBg(self):  # 设置背景
         MYSET.setBg = self.cb_nodebg.isChecked()
         self.save_set()
 
-    def toggle_copy(self):
+    def toggle_copy(self):  # 重命名选项
         MYSET.copy_option = self.cb_copyAssets.isChecked()
         self.save_set()
 
-    def toggle_gsgTri(self):
+    def toggle_gsgTri(self):  # GSG 材质纹理设置三平面
         MYSET.gsg_tri = self.cb_gsgTri.isChecked()
         self.save_set()
 
-    def change_gsgMat(self):
+    def change_gsgMat(self):  # GSG 材质默认类型
         if self.cr_gsgMat_0.isChecked():
             MYSET.gsg_mat = "Karma"
         else:
@@ -756,7 +777,9 @@ class Ui_Dialog(QDialog):
         self.save_set()
         self.update_win()
 
-    def add_other_node(self, parm_path, node_path):
+    # region 添加预设和添加自定义节点
+
+    def add_other_node(self, parm_path, node_path):  # 添加预设
         if parm_path:
             if ALLSET.language:
                 hou.ui.displayMessage("请拖入节点，而不是参数")
@@ -772,7 +795,7 @@ class Ui_Dialog(QDialog):
             msg = "此节点类型已存在" if ALLSET.language else "This node type has been exist"
             hou.ui.displayMessage(msg)
 
-    def add_filter_node(self, parm_path, node_path):
+    def add_filter_node(self, parm_path, node_path):  # 添加预设
         if parm_path:
             if ALLSET.language:
                 hou.ui.displayMessage("请拖入节点，而不是参数")
@@ -780,7 +803,7 @@ class Ui_Dialog(QDialog):
                 hou.ui.displayMessage("Please drop node, not drop parmater")
             return
         node_type = hou.node(node_path).type().nameWithCategory()
-
+        # item = f"{nodeclass}  >  {parmname}"
         if node_type not in MYSET.filter_nodes:
             MYSET.filter_nodes.append(node_type)
             self.save_set()
@@ -789,7 +812,7 @@ class Ui_Dialog(QDialog):
             msg = "此节点类型已添加" if ALLSET.language else "This node type has been exist"
             hou.ui.displayMessage(msg)
 
-    def del_other_node(self):
+    def del_other_node(self):  # 删除节点预设
         index = self.slw_other_nodes.currentRow()
         msg = "请在列表中选择一项" if ALLSET.language else "Please select one item in the list"
         if index == -1:
@@ -804,7 +827,7 @@ class Ui_Dialog(QDialog):
                 display_status(f"Snail_error_set: del_other_node _ {e}")
             self.refresh_other_node()
 
-    def del_filter_node(self):
+    def del_filter_node(self):  # 添加其他节点
         index = self.slw_fliter_nodes.currentRow()
         if index == -1:
             msg = "请在列表中选择一项" if ALLSET.language else "Please select one item in the list"
@@ -819,10 +842,12 @@ class Ui_Dialog(QDialog):
                 display_status(f"Snail_error_set: del_filter_node _ {e}")
             self.refresh_filter_node()
 
-    def save_set(self):
+    # endregion
+
+    def save_set(self):  # 保存设置
         MYSET.save_set()
 
-    def load_language(self):
+    def load_language(self):  # 加载语言
         try:
             if ALLSET.language:
                 self.pa.translator.load(
@@ -833,28 +858,37 @@ class Ui_Dialog(QDialog):
                     f"{ALLSET.sbox_path}/scripts/python/materialBox/tr_ui_en.pm"
                 )
             self.retranslateUi()
-
+            # self.tb_bz.toggle_language(ALLSET.language)
         except:
             hou.ui.displayMessage("Can't find language file")
 
-    def retranslateUi(self):
+    def retranslateUi(self):  # 重新翻译
         try:
-            self.cb_copyAssets.setText(self.tr("Copy assets to lib when Collecting material"))
-            self.cb_nodebg.setText(self.tr("Set node background for crate material"))
-            self.cb_gsgTri.setText(self.tr("Set triplanar texture for GSG material"))
+            self.cb_copyAssets.setText(
+                self.tr("Copy assets to lib when Collecting material"))
+            self.cb_nodebg.setText(
+                self.tr("Set node background for crate material"))
+            self.cb_gsgTri.setText(
+                self.tr("Set triplanar texture for GSG material"))
             self.lb_gsgMat.setText(self.tr("GSG material type"))
             self.sb_libDel.setText(self.tr("Delete"))
             self.sb_libMod.setText(self.tr("Modify"))
             self.sb_libRescan.setText(self.tr("Update"))
             self.sb_libAdd.setText(self.tr("Add"))
             self.sb_del_node_preset.setText(self.tr("Delete"))
-            self.lb_add_node_preset.setText(self.tr("Drag and drop node here to Add"))
+            self.lb_add_node_preset.setText(
+                self.tr("Drag and drop node here to Add"))
             self.sb_del_other_parm.setText(self.tr("Delete"))
-            self.lb_add_other_parm.setText(self.tr("Drag and drop node here to Add"))
-            self.stw.setTabText(self.stw.indexOf(self.s_tab_0), self.tr("Options"))
-            self.stw.setTabText(self.stw.indexOf(self.s_tab_1), self.tr("Add Library"))
-            self.stw.setTabText(self.stw.indexOf(self.s_tab_2), self.tr("Other node"))
-            self.stw.setTabText(self.stw.indexOf(self.s_tab_3), self.tr("Filter Node"))
+            self.lb_add_other_parm.setText(
+                self.tr("Drag and drop node here to Add"))
+            self.stw.setTabText(self.stw.indexOf(
+                self.s_tab_0), self.tr("Options"))
+            self.stw.setTabText(self.stw.indexOf(
+                self.s_tab_1), self.tr("Add Library"))
+            self.stw.setTabText(self.stw.indexOf(
+                self.s_tab_2), self.tr("Other node"))
+            self.stw.setTabText(self.stw.indexOf(
+                self.s_tab_3), self.tr("Filter Node"))
         except Exception as e:
             display_status(f"Snail_error_ht4: retranslateUi _ {e}")
 

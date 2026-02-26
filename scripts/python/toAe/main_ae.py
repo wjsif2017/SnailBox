@@ -1,5 +1,9 @@
+from utils import *
 import hou
 from .module import *
+from PySide6 import QtCore, QtGui
+from PySide6.QtWidgets import *
+# from .module import ae_item
 
 
 class Ae_win(QWidget):
@@ -7,8 +11,8 @@ class Ae_win(QWidget):
         super().__init__()
         self.setObjectName("Snail_toAe")
         self.sbox_path = hou.getenv("SnailBox")
-        self.aec = Aec(self)
-        self.start = Starter(self)
+        self.aec = ae_item.Aec(self)
+        self.start = ae_item.Starter(self)
         self.translator = QtCore.QTranslator()
         QApplication.installTranslator(self.translator)
         self.init_ui()
@@ -46,15 +50,18 @@ class Ae_win(QWidget):
         self.tb_language.clicked.connect(self.toggle_language)
         self.bt_refresh = Snail_Btn("Refresh")
         self.bt_export = Snail_Btn("Export AEC")
+
         self.bt_toAe = Snail_Btn("To Ae ")
         self.bt_refresh.clicked.connect(self.refresh)
         self.bt_export.clicked.connect(self.output_file)
+
         self.bt_toAe.clicked.connect(self.out_toAe)
         endlayout.addWidget(self.tb_bz)
         endlayout.addWidget(self.tb_help)
         endlayout.addWidget(self.tb_language)
         endlayout.addWidget(self.bt_refresh)
         endlayout.addWidget(self.bt_export)
+
         endlayout.addWidget(self.bt_toAe)
         self.mainlayout.addLayout(endlayout)
         self.refreh_outer_uis()
@@ -156,11 +163,15 @@ class Ae_win(QWidget):
             one.bt_color.clicked.connect(lambda: self.change_color(one))
             one.spin_sx.valueChanged.connect(lambda: self.rec_change_x(one))
             one.spin_sy.valueChanged.connect(lambda: self.rec_change_y(one))
-            one.combo_anchor.currentIndexChanged.connect(lambda: self.change_anchor(one))
+            one.combo_anchor.currentIndexChanged.connect(
+                lambda: self.change_anchor(one))
         elif one.type == "light":
-            one.ra_c1.clicked.connect(lambda: self.toggle_lightType(one, "OMNI"))
-            one.ra_c2.clicked.connect(lambda: self.toggle_lightType(one, "SPOT"))
-            one.ra_c3.clicked.connect(lambda: self.toggle_lightType(one, "PAR"))
+            one.ra_c1.clicked.connect(
+                lambda: self.toggle_lightType(one, "OMNI"))
+            one.ra_c2.clicked.connect(
+                lambda: self.toggle_lightType(one, "SPOT"))
+            one.ra_c3.clicked.connect(
+                lambda: self.toggle_lightType(one, "PAR"))
         else:
             pass
 
@@ -171,9 +182,11 @@ class Ae_win(QWidget):
     def load_language(self):
         try:
             if ALLSET.language:
-                self.translator.load(f"{self.sbox_path}/scripts/python/toAe/tr_zh.pm")
+                self.translator.load(
+                    f"{self.sbox_path}/scripts/python/toAe/tr_zh.pm")
             else:
-                self.translator.load(f"{self.sbox_path}/scripts/python/toAe/tr_en.pm")
+                self.translator.load(
+                    f"{self.sbox_path}/scripts/python/toAe/tr_en.pm")
             self.retranslateUi()
         except:
             hou.ui.displayMessage("Can't find language file")
@@ -216,7 +229,9 @@ class Ae_win(QWidget):
 def main_show():
     try:
         houMainWindow = hou.qt.mainWindow()
-        getChildWin = houMainWindow.findChild(QWidget, "SnailBox AeBridge")
+        getChildWin = houMainWindow.findChild(
+            QWidget, "SnailBox AeBridge"
+        )
         getChildWin.close()
         getChildWin.deleteLater()
     except:

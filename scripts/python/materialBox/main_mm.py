@@ -1,12 +1,15 @@
 import time
 import hou
-from utils.imgViewer import ImgViewer
+from PySide6 import QtGui, QtUiTools
+from utils.imageViewer import ImageViewer
 from .module import *
+from .module import mm_item as sm
 
 
 class MM_Win(QWidget):
     def __init__(self):
         super(MM_Win, self).__init__()
+
         self.lib_name = "Project"
         self.lib = None
         self.filter_items = {}
@@ -22,11 +25,16 @@ class MM_Win(QWidget):
         self.init_data()
 
     def init_ui(self):
-        self.ui = Ui_Snail_MM()
-        self.ui.setupUi(self.ui)
-        self.setStyleSheet("*{background-color: rgb(35, 35, 39);}")
-        self.ui.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+
+        if 0:
+            ufile = ALLSET.sbox_path + "/scripts/python/materialBox/file/mat5.ui"
+            self.ui = QtUiTools.QUiLoader().load(ufile, parentWidget=self)
+        else:
+            self.ui = Ui_Snail_MM()
+            self.ui.setupUi(self.ui)
+            self.setStyleSheet("*{background-color: rgb(35, 35, 39);}")
+            self.ui.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+            self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.ui_set = Ui_Dialog(self)
 
         mainlayout = QVBoxLayout()
@@ -54,7 +62,7 @@ class MM_Win(QWidget):
         self.ui.pb_progress.setHidden(True)
 
         self.updateMenu()
-        self.img_viewer = ImgViewer()
+        self.img_viewer = ImageViewer()
         self.assetsViewer = Snail_assetsViewer()
         self.assetsViewer.lw_assets.itemClicked.connect(self.refresh_info2)
         self.assetsViewer.tb_bigView.clicked.connect(self.show_img)
@@ -68,7 +76,8 @@ class MM_Win(QWidget):
 
         self.tb_bz = Snail_IconBtn_bz()
         self.tb_help = Snail_IconBtn_help()
-        self.tb_language = Snail_IconBtn("snail_language", "Toggle language")
+        self.tb_language = Snail_IconBtn(
+            "snail_language", "Toggle language")
         self.tb_language.clicked.connect(self.toggle_language)
         self.tb_set = Snail_IconBtn("snail_set", "Settings")
         self.tb_set.clicked.connect(self.go_set)
@@ -84,7 +93,7 @@ class MM_Win(QWidget):
         self.ui.layout_bottom.addWidget(self.btn_createImg)
         self.ui.layout_bottom.addWidget(self.btn_refresh)
 
-        self.l_title = Snail_LabelB("Project", 14)
+        self.l_title = Snail_LabelB("项目材质", 14)
         spacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.ui.layout_top.insertWidget(0, self.l_title)
         self.ui.layout_top.insertItem(1, spacer)
@@ -100,7 +109,8 @@ class MM_Win(QWidget):
             "snail_matThumb2", "Thumb with capture")
         self.tb_capture.clicked.connect(self.item_capture_thumbnail)
         self.ui.hl_2.addWidget(self.tb_capture)
-        self.tb_custom = Snail_IconBtn("snail_matThumb3", "Thumb with custom")
+        self.tb_custom = Snail_IconBtn(
+            "snail_matThumb3", "Thumb with custom")
         self.tb_custom.clicked.connect(self.item_custom_thumbnail)
         self.ui.hl_2.addWidget(self.tb_custom)
         self.tb_folder = Snail_IconBtn("BUTTONS_folder", "Asset folder")
@@ -130,16 +140,18 @@ class MM_Win(QWidget):
         self.ui.lw_view.itemClicked.connect(self.item_click)
         self.ui.lw_view.itemDoubleClicked.connect(self.item_double_click)
         self.ui.lw_view.verticalScrollBar().valueChanged.connect(self.on_scroll)
-        self.ui.lw_view.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.ui.lw_view.setContextMenuPolicy(
+            QtCore.Qt.CustomContextMenu)
         self.ui.lw_view.customContextMenuRequested.connect(
             self.rightClickContext)
 
     def init_data(self):
+        self.load_language()
         if not self.lib_name or self.lib_name == "Project":
-            self.lib = ProjectMats()
+            self.lib = sm.ProjectMats()
             self.tb_clear.setDisabled(False)
         else:
-            self.lib = LibMats(self.lib_name)
+            self.lib = sm.LibMats(self.lib_name)
             self.tb_clear.setDisabled(True)
         self.load_language()
         self.group_index = 0
@@ -166,7 +178,6 @@ class MM_Win(QWidget):
             return
         all_num = len(self.filter_items)
         current_num = self.last_index + 1
-
         if current_num >= all_num:
             return
         index = self.last_index
@@ -174,7 +185,6 @@ class MM_Win(QWidget):
         item_rect = self.ui.lw_view.visualItemRect(last_item_widget)
         lw_h = self.ui.lw_view.size().height()
         pos_y = item_rect.y()
-
         if pos_y < lw_h and pos_y > 20:
             self.refresh_btnItems(current_num)
 
@@ -203,7 +213,6 @@ class MM_Win(QWidget):
             except Exception as e:
                 display_status(f"Snail_error_mm: refresh_btnItems {id} _ {e}")
         self.last_index = i - 1
-
         self.on_scroll()
 
     def refresh_info(self):
@@ -223,7 +232,7 @@ class MM_Win(QWidget):
                 color = value.get("color")
                 if color:
                     qcolor = QtGui.QColor(*color)
-                item.setTextColor(qcolor)
+                item.setForeground(qcolor)
             fun = value.get("fun")
             if fun:
                 item.setData(QtCore.Qt.UserRole, fun)
@@ -510,10 +519,12 @@ class MM_Win(QWidget):
             display_status(f"Snail_error_mm: flip_info _ {e}")
 
     def updateMenu(self):
+
         self.ui.lw_menu1.clear()
         self.ui.lw_menu1.setIconSize(QtCore.QSize(40, 40))
         self.ui.lw_menu1.setGridSize(QtCore.QSize(70, 72))
         all_libs = {"Project": MYSET.lib_pj, **MYSET.libs}
+        index = 0
         for one in all_libs.values():
             icon_num = one.get("icon")
             name = one.get("name")
@@ -523,9 +534,9 @@ class MM_Win(QWidget):
             item.setSizeHint(QtCore.QSize(70, 60))
             item.setText(name)
             item.setData(QtCore.Qt.UserRole, name)
+            index += 1
+
             self.ui.lw_menu1.addItem(item)
-            if name == self.lib_name:
-                self.ui.lw_menu1.setCurrentItem(item)
         if len(all_libs) == 1:
             icon = QtGui.QIcon(f"{ALLSET.sbox_path}/file/icon02/10042.svg")
             item = QListWidgetItem(icon, "")
@@ -533,6 +544,7 @@ class MM_Win(QWidget):
             item.setText("Add lib")
             item.setData(QtCore.Qt.UserRole, "Add lib")
             self.ui.lw_menu1.addItem(item)
+        self.ui.lw_menu1.setCurrentRow(0)
 
     def rightClickContext(self, position=None):
         menu = Snail_Menu()
@@ -689,12 +701,13 @@ class MM_Win(QWidget):
 def main_show():
     try:
         houMainWindow = hou.qt.mainWindow()
-        getChildWin = houMainWindow.findChild(QWidget, "Snail_MM")
+        getChildWin = houMainWindow.findChild(
+            QWidget, "Snail_MM")
         getChildWin.parent().close()
         getChildWin.parent().deleteLater()
     except:
         pass
-    if not ALLSET.verify_sig("mm"):
+    if not ALLSET.verify_sig("fb"):
         return
     MYSET.init_data()
     mywin2 = MM_Win()

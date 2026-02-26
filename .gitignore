@@ -10,14 +10,19 @@ env/
 .venv/
 imagePlaceholders/
 build/
-.vscode/
-lib/
+# .vscode/
+lib/*
+!lib/Material/
+lib/Material/*
+!lib/Material/Karma/
 
 
 # 忽略格式
 *.rat
 *.c
 *.html
+!md_index.html 
+
 
 # baiduyun
 *.cfg

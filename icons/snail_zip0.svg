@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.9.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1"
+	 id="svg3913" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:ns="http://ns.adobe.com/AdobeIllustrator/10.0/" xmlns:cc="http://creativecommons.org/ns#" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 16"
+	 style="enable-background:new 0 0 16 16;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;stroke:url(#SVGID_1_);stroke-width:0.9506;stroke-linecap:round;}
+	
+		.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;stroke:url(#SVGID_00000003810706296247390610000004918568338975991692_);stroke-width:0.951;stroke-linecap:round;stroke-linejoin:round;}
+	.st2{fill:#358AFF;}
+	.st3{fill:#FFFFFF;}
+	.st4{fill:#FFBF00;}
+</style>
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="0.9646" y1="12.3909" x2="13.4448" y2="1.6935" gradientTransform="matrix(1 0 0 -1 0 15.9687)">
+	<stop  offset="0" style="stop-color:#757575"/>
+	<stop  offset="1" style="stop-color:#000000"/>
+</linearGradient>
+<path class="st0" d="M14.2,5.3v8.8c0,0.6-0.5,1-1,1H2.9c-0.6,0-1-0.5-1-1V1.9c-0.1-0.6,0.4-1,1-1h6.8L14.2,5.3z"/>
+<linearGradient id="SVGID_00000160883977833124931430000012112904669234324919_" gradientUnits="userSpaceOnUse" x1="-2239.6497" y1="4251.8184" x2="-2234.8489" y2="4247.7031" gradientTransform="matrix(-1 0 0 1 -2226.05 -4245.7314)">
+	<stop  offset="0" style="stop-color:#000000"/>
+	<stop  offset="1" style="stop-color:#666666"/>
+</linearGradient>
+<path style="fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;stroke:url(#SVGID_00000160883977833124931430000012112904669234324919_);stroke-width:0.951;stroke-linecap:round;stroke-linejoin:round;" d="
+	M9.8,4.3V0.9l4.5,4.4h-3.5C10.2,5.3,9.8,4.8,9.8,4.3z"/>
+<defs>
+	
+		<inkscape:perspective  id="perspective4016" inkscape:persp3d-origin="8 : 5.3333333 : 1" inkscape:vp_x="0 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_z="16 : 8 : 1" sodipodi:type="inkscape:persp3d">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  id="perspective4552" inkscape:persp3d-origin="372.04724 : 350.78739 : 1" inkscape:vp_x="0 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_z="744.09448 : 526.18109 : 1" sodipodi:type="inkscape:persp3d">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  bordercolor="#666666" borderlayer="top" borderopacity="1.0" fill="#eeeeec" height="16px" id="base" inkscape:current-layer="svg3913" inkscape:cx="8.9845684" inkscape:cy="8.5413834" inkscape:deskcolor="#d1d1d1" inkscape:grid-bbox="true" inkscape:grid-points="false" inkscape:pagecheckerboard="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:showpageshadow="false" inkscape:window-height="1377" inkscape:window-maximized="1" inkscape:window-width="2560" inkscape:window-x="-8" inkscape:window-y="-8" inkscape:zoom="37.230503" pagecolor="#ffffff" showgrid="true" showguides="false" stroke="#2e3436" width="16px">
+	
+		<inkscape:grid  color="#3f3fff" empcolor="#3f3fff" empopacity="0.38" empspacing="5" id="GridFromPre046Settings" opacity="0.15" originx="0" originy="0" spacingx="1.2760625" spacingy="1.408875" type="xygrid">
+		</inkscape:grid>
+</sodipodi:namedview>
+<path class="st2" d="M8.1,12.2H1.3c-0.5,0-0.9-0.4-0.9-0.9V4.5c0-0.5,0.4-0.9,0.9-0.9h6.8C8.6,3.6,9,4,9,4.5v6.8
+	C9,11.8,8.6,12.2,8.1,12.2z"/>
+<g>
+	<path class="st3" d="M1.8,10.2l3.6-4.5V5.6H2V4.3h5.4v1.4l-3.7,4.5v0.1h3.9v1.4H1.8V10.2z"/>
+</g>
+<polygon class="st4" points="15.8,13.9 13.8,15.9 10.3,12.4 6.8,15.9 4.8,13.9 10.3,8.3 "/>
+</svg>

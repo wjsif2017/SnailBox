@@ -1,0 +1,17 @@
+{
+    "python.analysis.extraPaths": [
+        "C:\\Program Files\\Side Effects Software\\Houdini 21.0.440\\houdini\\python3.11libs",
+        "C:\\Program Files\\Side Effects Software\\Houdini 21.0.559\\houdini\\python3.11libs",
+        ],
+        "workbench.colorCustomizations": {
+            "statusBar.background": "#336e7c",
+            "statusBar.foreground": "#f2f7fc",
+            "statusBarItem.hoverBackground": "#359268",
+            "statusBarItem.remoteBackground": "#42b883",
+            "statusBarItem.remoteForeground": "#15202b",
+            "titleBar.activeBackground": "#336e7c",
+            "titleBar.activeForeground": "#e7f3ff",
+            "titleBar.inactiveBackground": "#42b88399",
+            "titleBar.inactiveForeground": "#15202b99"
+        }
+}
