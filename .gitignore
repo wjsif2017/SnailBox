@@ -1,6 +1,5 @@
 # 特殊
-user.json
-signature_*
+# signature_*
 
 # 忽略路径
 __pycache__/
@@ -8,21 +7,29 @@ backup/
 .cache
 env/
 .venv/
-imagePlaceholders/
-build/
-# .vscode/
-lib/*
-!lib/Material/
-lib/Material/*
-!lib/Material/Karma/
 
+# lib/ - 只跟踪 SB_ 开头的文件夹
+lib/*/*/
+lib/Material/*/
+!lib/Material/SB_*/
+lib/recipe/*/
+!lib/recipe/SB_*/
+
+#vscode
+# .vscode/*
 
 # 忽略格式
+.cache
 *.rat
-*.c
-*.html
-!md_index.html 
-
 
 # baiduyun
 *.cfg
+
+# 用户配置文件
+conf/*
+!conf/flipbook.json
+!conf/public_key.pem
+
+# cladue
+CLAUDE.md
+.claude/
