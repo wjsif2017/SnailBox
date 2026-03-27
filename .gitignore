@@ -15,6 +15,10 @@ lib/Material/*/
 lib/recipe/*/
 !lib/recipe/SB_*/
 
+# aec
+*.aec
+file/aec/data.json
+
 #vscode
 # .vscode/*
 

@@ -2,8 +2,8 @@ import random
 import os
 import webbrowser
 import hou
-from hutil.Qt import QtCore, QtGui
-from hutil.Qt.QtWidgets import *
+from PySide6 import QtCore, QtGui
+from PySide6.QtWidgets import *
 from .snailFun import display_status, get_file_id2
 from .fileThumb import ImgThumb
 from .allSetting import ALLSET
@@ -67,6 +67,32 @@ class Snail_Btn(QPushButton):  # 按钮
             "QToolTip { background-color: rgb(45,45,45); color: rgb(170,170,170); font-size: 14px; font-family: Microsoft YaHei UI; }"
         )
 
+class Snail_Btn2(QPushButton):  # ICON文字按钮
+    def __init__(self, icon_name, text, tip=None,pa=None):
+        super().__init__(text, pa)
+
+        icon = Snail_icon(icon_name)
+        self.setIcon(icon)
+        self.setIconSize(QtCore.QSize(20, 20))
+        self.setFixedHeight(25)
+        # self.setFixedWidth(width)
+        if tip:
+            self.setToolTip(tip)
+        self.setProperty("radius", "all")  # 默认
+        self.setStyleSheet(
+            "QPushButton {background-color: rgb(50,50,50);border-radius: 5px; text-align: left; padding-left: 4px; }"
+            "QPushButton[radius='all'] {border-radius: 5px;}"
+            "QPushButton[radius='left'] {border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 0px; border-bottom-right-radius: 0px }"
+            "QPushButton[radius='right'] {border-top-left-radius: 0px; border-bottom-left-radius: 0px; border-top-right-radius: 5px; border-bottom-right-radius: 5px }"
+            "QPushButton[radius='none'] {border-radius: 0px;}"
+            "QToolTip { background-color: rgb(40,40,40); color: rgb(170,170,170); font-size: 13px; font-family: Microsoft YaHei UI; }"
+        )
+
+    def set_radius(self, mode="none"):
+        self.setProperty("radius", mode)
+        self.style().polish(self)
+        self.update()
+
 
 class Snail_CheckBox(QCheckBox):  # 勾选框
     def __init__(self, name, tip=None):
@@ -96,47 +122,95 @@ class Snail_ComboBox(QComboBox):  # 下拉框
         super().__init__(pa)
         self.setToolTip(tip)
         self.setFixedHeight(25)
+        self._items_list = items
         for one in items:
             if isinstance(one, str):
                 self.addItem(one)
             else:
                 icon = Snail_icon(one[0])
                 self.addItem(icon, one[1])
-        down_arrow_path = get_icon_path("snail_arrow3")
-        self.setStyleSheet(
-            f"""
-            QComboBox {{padding: 1px 3px 1px 3px;background-color: rgb(27,27,27); }}
-            QComboBox {{font-family: Microsoft YaHei UI; font-size: 13px; }}
-            QComboBox:hover {{border: 2px solid rgb(125,80,16);}}"
-            QComboBox::drop-down {{background-color: rgb(40,40,40); width: 25px; border-top-right-radius: 5px; border-bottom-right-radius: 5px;}}
-            QComboBox::down-arrow {{image: url('{down_arrow_path}'); width: 12px; height: 12px;}}
-            QComboBox QAbstractItemView {{border: 1px solid rgb(100, 100, 100);selection-background-color: rgb(125,80,16);selection-color: rgb(255, 191, 0);}}
-            QToolTip {{ background-color: rgb(45,45,45); color: rgb(170,170,170); font-size: 14px; font-family: Microsoft YaHei UI; }}
-            QComboBox[radius='all'] {{border-radius: 5px;}}
-            QComboBox[radius='left'] {{border-top-right-radius: 0px; border-bottom-right-radius: 0px;}}
-            QComboBox[radius='right'] {{border-top-left-radius: 0px; border-bottom-left-radius: 0px;}}
-            QComboBox[radius='none'] {{border-radius: 0px;}}
-        """
-        )
-        self.setProperty("radius", "all")  # 默认圆角
+        self._down_arrow_path = get_icon_path('snail_arrow3')
+        self.setProperty('radius', 'all')
+        self._update_stylesheet()
 
-    def set_radius(self, mode="all"):
-        """设置圆角模式"""
-        self.setProperty("radius", mode)
-        self.style().polish(self)
-        self.update()
+    def set_radius(self, mode='all'):
+        self.setProperty('radius', mode)
+        self._update_stylesheet()
+
+    def _update_stylesheet(self):
+        radius = self.property('radius') or 'all'
+        if radius == 'all':
+            radius_css = 'border-radius: 5px;'
+            dropdown_radius = 'border-top-right-radius: 5px; border-bottom-right-radius: 5px;'
+        elif radius == 'left':
+            radius_css = 'border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 0px; border-bottom-right-radius: 0px;'
+            dropdown_radius = 'border-top-right-radius: 0px; border-bottom-right-radius: 0px;'
+        elif radius == 'right':
+            radius_css = 'border-top-left-radius: 0px; border-bottom-left-radius: 0px; border-top-right-radius: 5px; border-bottom-right-radius: 5px;'
+            dropdown_radius = 'border-top-right-radius: 5px; border-bottom-right-radius: 5px;'
+        else:
+            radius_css = 'border-radius: 0px;'
+            dropdown_radius = 'border-top-right-radius: 0px; border-bottom-right-radius: 0px;'
+
+        # 构建 stylesheet - 正确的 CSS 语法
+        style = f'''
+            QComboBox {{
+                padding: 1px 3px 1px 3px;
+                background-color: rgb(27,27,27);
+                font-family: Microsoft YaHei UI;
+                font-size: 13px;
+                {radius_css}
+            }}
+            QComboBox:hover {{
+                border: 2px solid rgb(125,80,16);
+            }}
+            QComboBox::drop-down {{
+                background-color: rgb(40,40,40);
+                width: 25px;
+                {dropdown_radius}
+            }}
+            QComboBox::down-arrow {{
+                image: url('{self._down_arrow_path}');
+                width: 12px;
+                height: 12px;
+            }}
+            QComboBox QAbstractItemView {{
+                border: 1px solid rgb(100, 100, 100);
+                selection-background-color: rgb(125,80,16);
+                selection-color: rgb(255, 191, 0);
+            }}
+            QToolTip {{
+                background-color: rgb(45,45,45);
+                color: rgb(170,170,170);
+                font-size: 14px;
+                font-family: Microsoft YaHei UI;
+            }}
+        '''
+        self.setStyleSheet(style)
+
 
 
 class Snail_RadioButton(QRadioButton):  # 单选按钮
     def __init__(self, name, tip=None):
         super().__init__(name)
         self.setToolTip(tip)
+        self.setProperty("radius", "all")  # 默认
         self.setStyleSheet(
-            "QRadioButton {border-radius: 5px; padding: 2px;margin-left: 2px;margin-right: 2px;}"
-            "QRadioButton:hover {color: rgb(125,80,16); border-radius: 5px;}"
+            "QRadioButton {background-color: rgb(50,50,50); padding: 4px;}"
+            "QRadioButton:hover {border: 2px solid rgb(125,80,16);}"
             "QRadioButton {font-family: Microsoft YaHei UI; font-size: 14px;} "
+            "QRadioButton[radius='all'] {border-radius: 5px;}"
+            "QRadioButton[radius='left'] {border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 0px; border-bottom-right-radius: 0px }"
+            "QRadioButton[radius='right'] {border-top-left-radius: 0px; border-bottom-left-radius: 0px; border-top-right-radius: 5px; border-bottom-right-radius: 5px }"
+            "QRadioButton[radius='none'] {border-radius: 0px;}"
             "QToolTip { background-color: rgb(45,45,45); color: rgb(170,170,170); font-size: 14px; font-family: Microsoft YaHei UI; }"
         )
+        self.setFixedHeight(25)
+
+    def set_radius(self, mode="none"):
+        self.setProperty("radius", mode)
+        self.style().polish(self)
+        self.update()
 
 
 class Snail_Label(QLabel):
@@ -210,6 +284,100 @@ class Snail_DropLabel(Snail_Label):  # 拖拽添加Label
         node_path = str(node_path_data, "utf-8")
         if self.fun:
             self.fun(parm_path, node_path)
+
+class Snail_DropLabel2(Snail_Label):  # 可接受拖拽的Label2（支持绿框/红框反馈）
+
+    dropped = QtCore.Signal(str, str)  # 拖拽成功，发送 (parm_path, node_path)
+
+    def __init__(self, text, pa=None, tip=None, option=None):
+        """
+        初始化拖拽标签
+
+        Args:
+            text: 显示文本
+            pa: 父控件
+            tip: 工具提示
+            option: 接受类型 "node"=只接受节点, "parm"=只接受参数, None=都接受
+        """
+        super().__init__(text, pa, tip)
+        self.option = option
+        self.accepted = False
+        self.setAcceptDrops(True)
+        # 保存默认样式
+        self._default_style = self.styleSheet()
+
+    def _set_drag_style(self):
+        """
+        设置拖拽时的样式
+
+        Args:
+            accepted: True=绿色(接受), False=红色(拒绝)
+        """
+        if self.accepted:
+            bg_color = "rgba(0, 200, 0, 50)"  # 绿色 50 透明度
+        else:
+            bg_color = "rgba(200, 0, 0, 50)"  # 红色 50 透明度
+
+        self.setStyleSheet(
+            f"QLabel {{background-color: {bg_color}; padding-left: 4px; border:2px solid rgb(80,80,80);"
+            f"font-family: Microsoft YaHei UI; font-size: 13px;}}"
+            f"QLabel[radius='all'] {{border-radius: 5px;}}"
+            f"QLabel[radius='left'] {{border-top-left-radius: 5px; border-bottom-left-radius: 5px;}}"
+            f"QLabel[radius='right'] {{border-top-right-radius: 5px; border-bottom-right-radius: 5px;}}"
+            f"QLabel[radius='none'] {{border-radius: 0px;}}"
+        )
+
+    def _restore_default_style(self):
+        """恢复默认样式"""
+        self.setStyleSheet(self._default_style)
+
+    def dragEnterEvent(self, event):  # 当前widget是否接受数据
+        mime_data = event.mimeData()
+        self.accepted = False
+
+        # 检查是否有节点路径
+        has_node = mime_data.hasFormat(hou.qt.mimeType.nodePath)
+        # 检查是否有参数路径
+        has_parm = mime_data.hasFormat(hou.qt.mimeType.parmPath)
+
+        # 根据 option 决定接受什么类型
+        if self.option == "node" and  has_node:
+                self.accepted = True
+                event.acceptProposedAction()
+        elif self.option == "parm" and has_parm:
+                self.accepted = True
+                event.acceptProposedAction()
+        elif self.option is None:
+                self.accepted = True
+                event.acceptProposedAction()
+        else:
+            event.accept()
+
+        # 设置视觉反馈
+        self._set_drag_style()
+
+    def dragLeaveEvent(self, event):
+        # 恢复默认样式
+        self._restore_default_style()
+
+    def dropEvent(self, event):
+        if self.accepted:
+            mime_data = event.mimeData()
+            node_path_data = mime_data.data(hou.qt.mimeType.nodePath)
+            node_path = str(node_path_data, "utf-8") if node_path_data else ""
+            parm_path_data = mime_data.data(hou.qt.mimeType.parmPath)
+            parm_path = str(parm_path_data, "utf-8") if parm_path_data else ""
+
+            # 发射信号，发送两个参数
+            self.dropped.emit(parm_path, node_path)
+        elif self.option == "node":
+            hou.ui.displayMessage("请将节点拖拽到此处,非参数")
+        elif self.option == "parm":
+            hou.ui.displayMessage("请将参数拖拽到此处,非节点")
+        # 恢复默认样式
+        self._restore_default_style()
+        event.acceptProposedAction()
+        event.accept()
 
 
 class Snail_LineEdit(QLineEdit):  # line输入
@@ -439,6 +607,49 @@ class Snail_IconBtn3(Snail_IconBtn):  # 预览图ICON小按钮
         )
 
 
+class Snail_IconTextBtn(QPushButton):  # ICON文字按钮
+    def __init__(self, icon_name, text, tip=None, bg=1, pa=None):
+        super().__init__(text, pa)
+
+        icon = Snail_icon(icon_name)
+        self.setIcon(icon)
+        self.setIconSize(QtCore.QSize(20, 20))
+
+        if tip:
+            self.setToolTip(tip)
+
+        bg_list = [
+            "rgba(45,45,45,0)",
+            "rgb(45,45,45)",
+            "rgba(45,45,45,150)",
+        ]
+        bg_color = bg_list[bg]
+
+        self.setStyleSheet(
+            f"""
+            QPushButton {{
+                background-color: {bg_color};
+                border-radius: 5px;
+                padding-left: 6px;
+                padding-right: 6px;
+            }}
+
+            QPushButton:hover {{
+                background-color: rgb(20,20,20);
+                border: 2px solid rgb(100,100,100);
+            }}
+
+            QToolTip {{
+                background-color: rgb(45,45,45);
+                color: rgb(170,170,170);
+                font-size: 14px;
+                font-family: Microsoft YaHei UI;
+            }}
+            """
+        )
+
+        self.setProperty("transparent", True)
+
 class Snail_SpinBox(QSpinBox):  # 数字输入框
     def __init__(self, pre=None, suf=None, min=0, max=100, width=80):
         super().__init__()
@@ -472,81 +683,86 @@ class Snail_SpinBox(QSpinBox):  # 数字输入框
 
 
 class Snail_ColorBtn(QPushButton):  # 颜色按钮
-    def __init__(self, pa, width=50):
+    def __init__(self, width=50):
         super().__init__()
-        self.pa = pa
         self.setToolTip("Click to set color")
         self.setProperty("radius", "all")  # 默认圆角
-        self.setStyleSheet(
-            "QPushButton {background-color:rgb(15,100,200);}"
-            "QPushButton[radius='all'] {border-radius: 5px;}"
-            "QPushButton[radius='left'] {border-top-right-radius: 0px; border-bottom-right-radius: 0px;}"
-            "QPushButton[radius='right'] {border-top-left-radius: 0px; border-bottom-left-radius: 0px;}"
-            "QPushButton[radius='none'] {border-radius: 0px;}"
-            "QPushButton:hover {border: 2px solid rgb(125,80,16);}"
-            "QToolTip { background-color: rgb(45,45,45); color: rgb(170,170,170); font-size: 14px; font-family: Microsoft YaHei UI;}"
-        )
+        self._color_rgb = (15, 100, 200)  # 默认颜色 RGB (0-255 范围)
         self.setFixedWidth(width)
+        self._update_stylesheet()
 
     def set_radius(self, mode="none"):
-        """设置圆角模式"""
+        """设置圆角模式: all, left, right, none"""
         self.setProperty("radius", mode)
-        self.style().polish(self)
-        self.update()
+        self._update_stylesheet()
 
-    def changeColor(self, color=None):
-        if color:
-            r = color[0]
-            g = color[1]
-            b = color[2]
-        else:
-            color = hou.ui.selectColor()
-            if color == None:
-                return
-            r, g, b = color.rgb()
-        r = round(r, 6)
-        g = round(g, 6)
-        b = round(b, 6)
-        # 更新父对象的颜色（支持两种方式：直接 color 属性或 item.color）
-        self.pa.color = [r, g, b]
-        # 使用 getattr 避免 property 访问问题
-        item = getattr(self.pa, "item", None)
-        if item is not None:
-            item.color = [r, g, b]
-        r = int(r * 255)
-        g = int(g * 255)
-        b = int(b * 255)
-        # 获取当前圆角模式并重建样式
-        radius_mode = self.property("radius")
-        style = f"QPushButton{{ background-color:rgb({r},{g},{b});}}"
-        style += f"QPushButton[radius='all'] {{border-radius: 5px;}}"
-        style += f"QPushButton[radius='left'] {{border-top-right-radius: 0px; border-bottom-right-radius: 0px;}}"
-        style += f"QPushButton[radius='right'] {{border-top-left-radius: 0px; border-bottom-left-radius: 0px;}}"
-        style += f"QPushButton[radius='none'] {{border-radius: 0px;}}"
+    def _update_stylesheet(self):
+        """更新样式表"""
+        r, g, b = self._color_rgb
+        radius = self.property("radius") or "all"
+
+        # 根据不同的 radius 模式生成不同的 border-radius
+        if radius == "all":
+            radius_css = "border-radius: 5px;"
+        elif radius == "left":
+            radius_css = "border-top-left-radius: 5px; border-bottom-left-radius: 5px; border-top-right-radius: 0px; border-bottom-right-radius: 0px;"
+        elif radius == "right":
+            radius_css = "border-top-left-radius: 0px; border-bottom-left-radius: 0px; border-top-right-radius: 5px; border-bottom-right-radius: 5px;"
+        else:  # none
+            radius_css = "border-radius: 0px;"
+
+        style = f"QPushButton{{ background-color:rgb({r},{g},{b}); {radius_css}}}"
         style += "QPushButton:hover {border: 2px solid rgb(125,80,16);}"
         style += "QToolTip { background-color: rgb(45,45,45); color: rgb(170,170,170); font-size: 14px; font-family: Microsoft YaHei UI;}"
         self.setStyleSheet(style)
 
-    def getColor(self):
-        """获取当前颜色"""
-        if hasattr(self.pa, "item"):
-            return self.pa.item.color
-        elif hasattr(self.pa, "color"):
-            return self.pa.color
-        return [1, 0, 0]  # 默认红色
+    def changeColor(self, color=None):
+        """
+        设置按钮颜色
+
+        Args:
+            color: RGB 颜色值 [r, g, b] (0-255 范围)
+                   - None: 打开颜色选择器并返回 RGB 255
+                   - [r, g, b]: 直接设置颜色 (0-255 范围)
+
+        Returns:
+            [r, g, b] 当前颜色 (0-255 范围)，如果取消则返回 None
+        """
+        if color is None:
+            # 打开颜色选择器 (Houdini 返回 0.0-1.0)
+            hou_color = hou.ui.selectColor()
+            if hou_color is None:
+                return None  # 用户取消
+            r, g, b = hou_color.rgb()
+            # 转换为 0-255
+            self._color_rgb = (int(r * 255), int(g * 255), int(b * 255))
+        else:
+            # color 是 [r, g, b] 列表，0-255 范围
+            self._color_rgb = (int(color[0]), int(color[1]), int(color[2]))
+
+        self._update_stylesheet()
+        return list(self._color_rgb)
+
+    def get_rgb(self):
+        """获取颜色 RGB (0-255 范围)"""
+        return list(self._color_rgb)
 
     def set_randomColor(self):
-        r = random.random()
-        g = random.random()
-        b = random.random()
-        r = round(r, 6)
-        g = round(g, 6)
-        b = round(b, 6)
-        color = [r, g, b]
-        self.changeColor(color)
+        """
+        设置随机颜色
+
+        Returns:
+            [r, g, b] 随机颜色 (0-255 范围，整数)
+        """
+        import random
+        r = random.randint(0, 255)
+        g = random.randint(0, 255)
+        b = random.randint(0, 255)
+        self._color_rgb = (r, g, b)
+        self._update_stylesheet()
+        return [r, g, b]
 
 
-##################
 class Snail_IconBtn_bz(Snail_IconBtn):  # 视频链接
     def __init__(self):
         super().__init__("snail_bz", "Bilibli")
@@ -575,7 +791,7 @@ class Snail_IconBtn_help(Snail_IconBtn):  # 在线帮助
         self.clicked.connect(self.go_help)
 
     def go_help(self):
-        url = "http://snailbox.online/hsb/doc"
+        url = ALLSET.api_url + "redirect/doc"
         webbrowser.open(url, new=0, autoraise=True)
 
 
@@ -660,8 +876,7 @@ class Snail_List2(QListWidget):  # info栏
     def __init__(self, pa=None):
         super().__init__(pa)
         self.setGridSize(QtCore.QSize(0, 27))
-        self.setStyleSheet(
-            "QListWidget{background: transparent; padding: 2px;}")
+        self.setStyleSheet("QListWidget{background: transparent; padding: 2px;}")
 
     def add_item(self, key, value, readOnly=False):
         """
@@ -716,8 +931,7 @@ class Snail_ImgButton(QToolButton):  # 主按钮
         self.name = name
         self.btn_size = thumbsize
         self.setFixedSize(self.btn_size)
-        self.icon_size = QtCore.QSize(
-            self.btn_size.width(), self.btn_size.height() - 25)
+        self.icon_size = QtCore.QSize(self.btn_size.width(), self.btn_size.height() - 25)
         self.setIconSize(self.icon_size)
         self.setFocusPolicy(QtCore.Qt.NoFocus)
         self.setMouseTracking(True)
@@ -971,6 +1185,7 @@ class Snail_assetsViewer(QWidget):
             return file_info
 
     def resizeEvent(self, event):
+        # print("resizeEvent")
         width = self.size().width()
         height = self.size().height()
         if not width or not height:

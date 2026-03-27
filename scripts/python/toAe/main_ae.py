@@ -1,268 +1,108 @@
-from utils import *
 import hou
-from .module import *
-from PySide6 import QtCore, QtGui
-from PySide6.QtWidgets import *
-# from .module import ae_item
+import traceback
+from utils import QtCore, QtGui, QWidget, QVBoxLayout
+from utils import ALLSET, display_status
+from .module import ae_item
+from .module import ae_ui
+
+import importlib
+importlib.reload(ae_ui)
+importlib.reload(ae_item)
 
 
 class Ae_win(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setObjectName("Snail_toAe")
-        self.sbox_path = hou.getenv("SnailBox")
-        self.aec = ae_item.Aec(self)
-        self.start = ae_item.Starter(self)
-        self.translator = QtCore.QTranslator()
-        QApplication.installTranslator(self.translator)
-        self.init_ui()
-        self.load_language()
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
-    def init_ui(self):
-        self.setStyleSheet("*{background-color: rgb(35, 35, 39);}")
-        self.mainlayout = QVBoxLayout()
-        self.mainlayout.setSpacing(0)
-        self.mainlayout.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(self.mainlayout)
-        self.resize(550, 650)
-        self.setWindowTitle("SnailBox Ae Bridge")
-        self.setWindowIcon(QtGui.QIcon(self.sbox_path + "/file/SnailBox.svg"))
+        self.manager = ae_item.Ae_Manager()
 
-        self.lw_outer = QListWidget(self)
-        self.lw_outer.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.lw_outer.setSpacing(4)
-        self.lw_outer.setStyleSheet(
-            "QListWidget::Item{ border:2px solid rgb(25,25,25); border-radius: 5px;}"
-            "QListWidget::Item:selected{background-color:rgb(35, 35, 39); border:1px solid rgb(255,163,32);}"
-        )
-        outerlayout = QVBoxLayout()
-        self.startlayout = QHBoxLayout()
+        self.ui = ae_ui.Ui_Main(self, self.manager)
 
-        self.startlayout.addWidget(self.start.ui)
-        outerlayout.addWidget(self.lw_outer)
-        self.mainlayout.addLayout(self.startlayout)
-        self.mainlayout.addLayout(outerlayout)
+        self._setup_window()
 
-        endlayout = QHBoxLayout()
-        self.tb_bz = Snail_IconBtn_bz()
-        self.tb_help = Snail_IconBtn_help()
-        self.tb_language = Snail_IconBtn("snail_language", "Change language")
-        self.tb_language.clicked.connect(self.toggle_language)
-        self.bt_refresh = Snail_Btn("Refresh")
-        self.bt_export = Snail_Btn("Export AEC")
+    def _setup_window(self):
+        self.setObjectName("SnailBox_AeBridger")
+        self.setWindowTitle("SnailBox Ae Bridger")
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowIcon(QtGui.QIcon(ALLSET.sbox_path + "/icons/SnailBox.svg"))
+        main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(main_layout)
+        main_layout.addWidget(self.ui)
+        self.resize(650, 650)
 
-        self.bt_toAe = Snail_Btn("To Ae ")
-        self.bt_refresh.clicked.connect(self.refresh)
-        self.bt_export.clicked.connect(self.output_file)
+    def on_refresh_clicked(self):
+        self.manager.update_from_houdini()
 
-        self.bt_toAe.clicked.connect(self.out_toAe)
-        endlayout.addWidget(self.tb_bz)
-        endlayout.addWidget(self.tb_help)
-        endlayout.addWidget(self.tb_language)
-        endlayout.addWidget(self.bt_refresh)
-        endlayout.addWidget(self.bt_export)
+        self.ui.refresh()
 
-        endlayout.addWidget(self.bt_toAe)
-        self.mainlayout.addLayout(endlayout)
-        self.refreh_outer_uis()
+        self.manager.refresh_items()
 
-    def refreh_outer_uis(self):
-        self.lw_outer.clear()
-        outers = self.aec.outers
-        if not outers:
+        self._update_item_list()
+
+    def on_node_dropped(self, parm_paths, node_paths):
+        if parm_paths or not node_paths:
             return
-        for one in outers:
-            o_ui = one.initUI()
-            if not o_ui:
-                continue
-            self.outer_bind(one)
-            newItem = QListWidgetItem("")
-            newItem.setSizeHint(o_ui.sizeHint())
-            self.lw_outer.addItem(newItem)
-            self.lw_outer.setItemWidget(newItem, o_ui)
-        self.retranslateUi()
 
-    def refresh(self):
-        self.aec.refreh_outers()
-        self.aec.refreh_starter()
-        self.start.refresh()
-        self.refreh_outer_uis()
+        path_list = node_paths.split()
+        self.add_items(path_list)
 
-    def output_file(self):
-        self.aec.output_file()
+    def add_items(self, path_list):
+        added_count = 0
+        for path in path_list:
+            try:
+                node = hou.node(path)
+                if not node:
+                    raise ValueError(f"Invalid node path: {path}")
+                node_id = node.sessionId()
+                item = self.manager.add_item(node_id)
+                if item:
+                    added_count += 1
+            except ValueError as e:
+                display_status(f"Snail_error_ae: {e}")
+            except Exception as e:
+                display_status(f"Snail_error_ae: {e}\n{traceback.format_exc()}")
 
-    def out_toAe(self):
-        self.aec.out_toAe()
+        if added_count > 0:
+            self._update_item_list()
 
-    def name_change(self):
-        self.start.name_change()
+    def _update_item_list(self):
+        self.ui.clear_item_list()
 
-    def res_change_x(self):
-        self.start.res_change_x()
+        items = self.manager.get_all_items()
+        if not items:
+            return
+        for item in items.values():
+            try:
+                self._add_item_widget(item)
+            except Exception as e:
+                display_status(f"Snail_error_ae: {e}\n{traceback.format_exc()}")
 
-    def res_change_y(self):
-        self.start.res_change_y()
-
-    def frame_change_start(self):
-        self.start.frame_change_start()
-
-    def frame_change_end(self):
-        self.start.frame_change_end()
-
-    def frame_change_current(self):
-        self.start.frame_change_current()
-
-    def toggle_all_animate(self, bool):
-        self.aec.toggle_all_animate(bool)
-
-    def toggle_preview(self, bool):
-        self.aec.preview = bool
-
-    def current_item(func):
-        def wrapper(self, *args, **kwargs):
-            pos = self.lw_outer.mapFromGlobal(QtGui.QCursor.pos())
-            item = self.lw_outer.itemAt(pos)
-            if item:
-                index = self.lw_outer.row(item)
-                self.lw_outer.setCurrentRow(index)
-            func(self, *args, **kwargs)
-
-        return wrapper
-
-    def del_outer(self, outer):
-        if outer in self.aec.outers:
-            self.aec.outers.remove(outer)
-            self.refreh_outer_uis()
-
-    def toggle_animate(self, outer):
-        outer.toggle_animate(bool)
-
-    def toggle_null(self, outer):
-        outer.toggle_null()
-
-    def rec_change_x(self, outer):
-        outer.rec_change_x()
-
-    def rec_change_y(self, outer):
-        outer.rec_change_y()
-
-    def change_anchor(self, outer):
-        outer.change_anchor()
-
-    def change_color(self, outer):
-        outer.change_color()
-
-    def toggle_lightType(self, outer, option):
-        outer.toggle_lightType(option)
-
-    def outer_bind(self, one):
-        one.icon_close.clicked.connect(lambda: self.del_outer(one))
-        one.cb_static.toggled.connect(lambda: self.toggle_animate(one))
-        if one.type == "null":
-            one.cb_null.toggled.connect(lambda: self.toggle_null(one))
-            one.bt_color.clicked.connect(lambda: self.change_color(one))
-            one.spin_sx.valueChanged.connect(lambda: self.rec_change_x(one))
-            one.spin_sy.valueChanged.connect(lambda: self.rec_change_y(one))
-            one.combo_anchor.currentIndexChanged.connect(
-                lambda: self.change_anchor(one))
-        elif one.type == "light":
-            one.ra_c1.clicked.connect(
-                lambda: self.toggle_lightType(one, "OMNI"))
-            one.ra_c2.clicked.connect(
-                lambda: self.toggle_lightType(one, "SPOT"))
-            one.ra_c3.clicked.connect(
-                lambda: self.toggle_lightType(one, "PAR"))
+    def _add_item_widget(self, item):
+        if item.type == ae_item.NodeType.OBJ_CAMERA:
+            widget = ae_ui.ObjCamItemWidget(item, self)
+        elif item.type == ae_item.NodeType.OBJ_LIGHT:
+            widget = ae_ui.ObjLightItemWidget(item, self)
+        elif item.type == ae_item.NodeType.SOP_NULL:
+            widget = ae_ui.SopNullItemWidget(item, self)
         else:
-            pass
+            widget = ae_ui.ObjNullItemWidget(item, self)
 
-    def toggle_language(self):
-        ALLSET.toggle_language()
-        self.load_language()
+        self.ui.add_item_widget(widget)
 
-    def load_language(self):
-        try:
-            if ALLSET.language:
-                self.translator.load(
-                    f"{self.sbox_path}/scripts/python/toAe/tr_zh.pm")
-            else:
-                self.translator.load(
-                    f"{self.sbox_path}/scripts/python/toAe/tr_en.pm")
-            self.retranslateUi()
-        except:
-            hou.ui.displayMessage("Can't find language file")
-
-    def retranslateUi(self):
-        self.bt_refresh.setText(self.tr("Refresh"))
-        self.bt_export.setText(self.tr("Export AEC"))
-        self.bt_toAe.setText(self.tr("To Ae"))
-        self.start.label_a.setText(self.tr("C name"))
-        self.start.label_b.setText(self.tr("C size"))
-        self.start.label_c.setText(self.tr("F range"))
-        self.start.label_d.setText(self.tr("F rate"))
-        self.start.label_e.setText(self.tr("Frame"))
-        self.start.cb_d1.setText(self.tr("Export Flipbook"))
-        self.start.cb_e1.setText(self.tr("Toggle Static"))
-        self.start.label_adder.setText(self.tr("Drag node here"))
-
-        self.tb_bz.setToolTip(self.tr("Bilibili"))
-        self.tb_help.setToolTip(self.tr("Online documents"))
-        self.tb_language.setToolTip(self.tr("Change language"))
-
-        for one in self.aec.outers:
-            one.label_b3.setText(self.tr("Options"))
-            one.cb_static.setText(self.tr("Static"))
-            if one.type == "light":
-                one.ra_c1.setText(self.tr("Point"))
-                one.ra_c2.setText(self.tr("Spot"))
-                one.ra_c3.setText(self.tr("Parallel"))
-            elif one.type == "null":
-                one.cb_null.setText(self.tr("Null Object"))
-                one.label_color.setText(self.tr("Solid color"))
-                one.label_d1.setText(self.tr("Solid size"))
-                one.label_anchor.setText(self.tr("Anchor point"))
-
-    def closeEvent(self, event):
-        self.aec.save_preset()
-        super().closeEvent(event)
+    def delete_item(self, item_id):
+        self.manager.remove_item(item_id)
+        self._update_item_list()
 
 
 def main_show():
-    try:
-        houMainWindow = hou.qt.mainWindow()
-        getChildWin = houMainWindow.findChild(
-            QWidget, "SnailBox AeBridge"
-        )
-        getChildWin.close()
-        getChildWin.deleteLater()
-    except:
-        pass
+    houMainWindow = hou.qt.mainWindow()
+    get_child_win = houMainWindow.findChild(QWidget, "SnailBox_AeBridger")
+    if get_child_win:
+        get_child_win.close()
+        get_child_win.deleteLater()
     if not ALLSET.verify_sig("ae"):
         return
-    mywin2 = Ae_win()
-    mywin2.setParent(hou.qt.mainWindow(), QtCore.Qt.Window)
-    mywin2.show()
-
-
-def callInterface():
-    panel = None
-    pane_name = "SnailBox_AeBridge"
-    for pane in hou.ui.floatingPaneTabs():
-        if pane.floatingPanel().name() == pane_name:
-            ae_win = pane.activeInterfaceRootWidget()
-            ae_win.refresh()
-            panel = pane
-    if not ALLSET.verify_sig("ae"):
-        return
-    if not panel:
-        panel = hou.ui.curDesktop().createFloatingPaneTab(
-            hou.paneTabType.PythonPanel, (500, 500), (550, 650), pane_name
-        )
-    if panel:
-        panel.showToolbar(0)
-        panel.expandToolbar(0)
-    if panel.floatingPanel():
-        panel.floatingPanel().setName(pane_name)
-    try:
-        panel.floatingPanel().qtParentWindow().showNormal()
-    except:
-        pass
+    win = Ae_win()
+    win.setParent(hou.qt.mainWindow(), QtCore.Qt.Window)
+    win.show()

@@ -1,11 +1,9 @@
 import hou
-from PySide6 import QtCore, QtGui
-from PySide6.QtWidgets import *
-from utils.snailWidget import Snail_Menu
+from utils import QtCore, QtGui
+from utils import QWidget, QVBoxLayout, QListWidgetItem, Snail_Menu
 from utils import mdViewer as md
 from utils import capture as cap
 from utils import ALLSET
-from utils import display_status
 from .module import *
 
 
@@ -70,12 +68,11 @@ class RB_Win(QWidget):
         self.ui.list_thumb.customContextMenuRequested.connect(self.rightClickContext)
 
     def init_data(self):
-        if not self.manager:
-            return
-
         self.refresh()
 
     def refresh(self):
+        if not self.manager.items:
+            return
         self.refresh_groups()
         self.refresh_list()
         self.refresh_info()
@@ -189,7 +186,7 @@ class RB_Win(QWidget):
             return
 
         if lib_name not in MYSET.libs:
-            display_status(f"Snail_error_rb_main: Library '{lib_name}' not found")
+            print(f"Library '{lib_name}' not found")
             return
 
         self.current_lib_name = lib_name
@@ -387,7 +384,7 @@ class RB_Win(QWidget):
         id = ids[-1]
         self.manager.apply_item(id)
 
-    def apply_item2(self, id):
+    def apply_item(self, id):
         self.manager.apply_item(id)
 
     @current_items

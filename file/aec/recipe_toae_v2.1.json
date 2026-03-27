@@ -1,0 +1,766 @@
+{
+    "toae": {
+        "type": "subnet",
+        "inputs": [
+            {
+                "from": "box1",
+                "from_index": 0,
+                "to_index": 0
+            }
+        ],
+        "position": [
+            0,
+            0
+        ],
+        "parms": {
+            "grouptype": "prims",
+            "index": "*",
+            "is_random_color": false,
+            "color": [
+                0.4523795535098186,
+                0.559772386080496,
+                0.9242105840237294
+            ]
+        },
+        "parmtemplates": [
+            {
+                "insert_after": "label1",
+                "parmtemplates": {
+                    "grouptype": {
+                        "type": "ordered_menu",
+                        "label": "Group Type",
+                        "tags": {
+                            "autoscope": "0000000000000000",
+                            "script_callback_language": "python"
+                        },
+                        "menu_type": "normal",
+                        "menu_items": [
+                            {
+                                "token": "guess",
+                                "label": "Guess from Group"
+                            },
+                            {
+                                "token": "breakpoints",
+                                "label": "Breakpoints"
+                            },
+                            {
+                                "token": "edges",
+                                "label": "Edges"
+                            },
+                            {
+                                "token": "points",
+                                "label": "Points"
+                            },
+                            {
+                                "token": "prims",
+                                "label": "Primitives"
+                            }
+                        ],
+                        "default_value": "prims"
+                    },
+                    "index": {
+                        "type": "string",
+                        "label": "index",
+                        "tags": {
+                            "autoscope": "0000000000000000",
+                            "script_action": "import soputils\nkwargs['geometrytype'] = kwargs['node'].parmTuple('grouptype')\nkwargs['inputindex'] = 0\nsoputils.selectGroupParm(kwargs)",
+                            "script_action_help": "Select geometry from an available viewport.\nShift-click to turn on Select Groups.",
+                            "script_action_icon": "BUTTONS_reselect"
+                        },
+                        "script_callback_language": "hscript",
+                        "menu_type": "string_toggle",
+                        "item_generator_script": "opmenu -l -a blast_index group",
+                        "item_generator_script_language": "Hscript"
+                    },
+                    "is_random_color": {
+                        "type": "toggle",
+                        "label": "is_random_color",
+                        "tags": {
+                            "autoscope": "0000000000000000",
+                            "script_callback_language": "python"
+                        }
+                    },
+                    "color": {
+                        "type": "color",
+                        "label": "Color",
+                        "tags": {
+                            "autoscope": "0000000000000000"
+                        },
+                        "script_callback_language": "hscript",
+                        "default_value": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "max_value": 1.0
+                    }
+                }
+            }
+        ],
+        "children": {
+            "ae_out": {
+                "type": "null",
+                "inputs": [
+                    {
+                        "from": "switch_color",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    0.52,
+                    -10.34
+                ],
+                "parms": {
+                    "copyinput": true,
+                    "cacheinput": false
+                }
+            },
+            "ae_in": {
+                "type": "null",
+                "inputs": [
+                    {
+                        "from": "1",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    0,
+                    6.66
+                ],
+                "parms": {
+                    "copyinput": true,
+                    "cacheinput": false
+                }
+            },
+            "output0": {
+                "type": "output",
+                "inputs": [
+                    {
+                        "from": "ae_out",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    0.52,
+                    -11.58
+                ],
+                "flags": {
+                    "display": true,
+                    "render": true
+                },
+                "parms": {
+                    "outputidx": 0
+                }
+            },
+            "blast_index": {
+                "type": "blast",
+                "inputs": [
+                    {
+                        "from": "ae_in",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    0,
+                    5.55
+                ],
+                "parms": {
+                    "group": {
+                        "expression": "chs(\"../index\")"
+                    },
+                    "grouptype": {
+                        "expression": "ch(\"../grouptype\")"
+                    },
+                    "computenorms": false,
+                    "negate": true,
+                    "fillhole": false,
+                    "removegrp": false
+                }
+            },
+            "switch_color": {
+                "type": "switch",
+                "inputs": [
+                    {
+                        "from": "color2",
+                        "from_index": 0,
+                        "to_index": 0
+                    },
+                    {
+                        "from": "color1",
+                        "from_index": 0,
+                        "to_index": 1
+                    }
+                ],
+                "position": [
+                    0.52,
+                    -8.94
+                ],
+                "parms": {
+                    "input": {
+                        "expression": "ch(\"../is_random_color\")"
+                    }
+                }
+            },
+            "attribwrangle11": {
+                "type": "attribwrangle",
+                "inputs": [
+                    {
+                        "from": "normal3",
+                        "from_index": 0,
+                        "to_index": 1
+                    },
+                    {
+                        "from": "bound3",
+                        "from_index": 0,
+                        "to_index": 2
+                    }
+                ],
+                "position": [
+                    -0.03,
+                    -3.62
+                ],
+                "color": [
+                    1,
+                    0,
+                    0
+                ],
+                "flags": {
+                    "colordefault": false
+                },
+                "user_data": {
+                    "nodeshape": "circle"
+                },
+                "parms": {
+                    "group": "",
+                    "grouptype": "guess",
+                    "class": "detail",
+                    "vex_numcount": 10,
+                    "vex_threadjobsize": 1024,
+                    "mult": 100,
+                    "snippet": "vector center_pos = getbbox_center(2);\naddpoint(0,center_pos);\nfloat mult = 1.0;\nsetpointattrib(0,\"mult\",0,mult);\nmatrix mm = detail(1,\"mm\");\nsetpointattrib(0,\"mm\",0,mm);\nvector size = getbbox_size(1);\nfloat size_0 = size[0];\nfloat size_1 = size[1];\nsetpointattrib(0,\"size_x\",0,size_0);\nsetpointattrib(0,\"size_y\",0,size_1);\nfloat add_x = size_0/(mult*2.0);\nfloat add_y = size_1/(mult*2.0);\nvector pos[] = array();\nforeach(int pt;primpoints(1,0)){\n  vector po = point(1,\"P\",pt);\n  po = set(po[0]+add_x ,-po[1]+add_y,0);\n  po *= mult;\n  append(pos,po);\n}\nsetpointattrib(0,\"pos\",0,pos);",
+                    "exportlist": "*",
+                    "vex_strict": false,
+                    "vex_strictvariables": true,
+                    "autobind": true,
+                    "bindings": 0,
+                    "groupautobind": true,
+                    "groupbindings": 0,
+                    "vex_cwdpath": ".",
+                    "vex_outputmask": "*",
+                    "vex_updatenmls": false,
+                    "vex_matchattrib": "id",
+                    "vex_inplace": false,
+                    "vex_selectiongroup": "",
+                    "vex_precision": "auto"
+                },
+                "parmtemplates": [
+                    {
+                        "insert_after": "vex_threadjobsize",
+                        "parmtemplates": {
+                            "folder_generatedparms_snippet": {
+                                "type": "folder_simple",
+                                "label": "Generated Channel Parameters",
+                                "tags": {
+                                    "group_type": "simple",
+                                    "sidefx::look": "blank"
+                                },
+                                "script_callback_language": "hscript",
+                                "parmtemplates": {
+                                    "mult": {
+                                        "type": "integer",
+                                        "label": "Mult",
+                                        "script_callback_language": "hscript",
+                                        "menu_type": "normal"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "color1": {
+                "type": "color",
+                "inputs": [
+                    {
+                        "from": "enumerate1",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    1.8,
+                    -7.57
+                ],
+                "parms": {
+                    "group": "",
+                    "grouptype": "guess",
+                    "deleteallcolorattribs": false,
+                    "enable": true,
+                    "class": 2,
+                    "colortype": 4,
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "seed": 0.0,
+                    "rampattribute": "index",
+                    "ramprange": [
+                        0.0,
+                        1.0
+                    ],
+                    "ramp": [
+                        {
+                            "pos": 0.0,
+                            "value": [
+                                0.20000000298023224,
+                                0.0,
+                                1.0
+                            ],
+                            "interp": "linear"
+                        },
+                        {
+                            "pos": 0.25,
+                            "value": [
+                                0.0,
+                                0.8500000238418579,
+                                1.0
+                            ],
+                            "interp": "linear"
+                        },
+                        {
+                            "pos": 0.5,
+                            "value": [
+                                0.0,
+                                1.0,
+                                0.10000000149011612
+                            ],
+                            "interp": "linear"
+                        },
+                        {
+                            "pos": 0.75,
+                            "value": [
+                                0.949999988079071,
+                                1.0,
+                                0.0
+                            ],
+                            "interp": "linear"
+                        },
+                        {
+                            "pos": 1.0,
+                            "value": [
+                                1.0,
+                                0.0,
+                                0.0
+                            ],
+                            "interp": "linear"
+                        }
+                    ]
+                }
+            },
+            "enumerate1": {
+                "type": "enumerate",
+                "inputs": [
+                    {
+                        "from": "foreach_end2",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    1.8,
+                    -6.55
+                ],
+                "parms": {
+                    "group": "",
+                    "grouptype": "point",
+                    "usepieceattrib": false,
+                    "pieceattrib": "name",
+                    "piecemode": "elements",
+                    "attribname": "index",
+                    "attribtype": "int",
+                    "prefix": "piece"
+                }
+            },
+            "foreach_end2": {
+                "type": "block_end",
+                "inputs": [
+                    {
+                        "from": "attribwrangle11",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    0.14,
+                    -5.1
+                ],
+                "color": [
+                    0.75,
+                    0.4,
+                    0
+                ],
+                "flags": {
+                    "colordefault": false
+                },
+                "parms": {
+                    "itermethod": "pieces",
+                    "method": "merge",
+                    "iterations": 10,
+                    "startvalue": 1.0,
+                    "increment": 1.0,
+                    "class": "primitive",
+                    "useattrib": false,
+                    "attrib": "",
+                    "usemaxiter": false,
+                    "maxiter": 10,
+                    "blockpath": "../foreach_begin2",
+                    "templatepath": "../foreach_begin2",
+                    "resetcookpass": "0",
+                    "dosinglepass": false,
+                    "singlepass": 0,
+                    "stopcondition": 0,
+                    "stopattrib": "",
+                    "multithread": false
+                }
+            },
+            "foreach_begin2": {
+                "type": "block_begin",
+                "inputs": [
+                    {
+                        "from": "del_area0",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    0,
+                    3.43
+                ],
+                "color": [
+                    0.75,
+                    0.4,
+                    0
+                ],
+                "flags": {
+                    "colordefault": false
+                },
+                "parms": {
+                    "method": "piece",
+                    "blockpath": "../foreach_end2",
+                    "resetcookpass": "0",
+                    "createmetablock": "0"
+                }
+            },
+            "color2": {
+                "type": "color",
+                "inputs": [
+                    {
+                        "from": "foreach_end2",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    -1.39,
+                    -7
+                ],
+                "parms": {
+                    "group": "",
+                    "grouptype": "guess",
+                    "deleteallcolorattribs": false,
+                    "enable": true,
+                    "class": 2,
+                    "colortype": 0,
+                    "color": [
+                        {
+                            "expression": "ch(\"../colorr\")"
+                        },
+                        {
+                            "expression": "ch(\"../colorg\")"
+                        },
+                        {
+                            "expression": "ch(\"../colorb\")"
+                        }
+                    ],
+                    "seed": 0.0,
+                    "rampattribute": "index",
+                    "ramprange": [
+                        0.0,
+                        1.0
+                    ],
+                    "ramp": [
+                        {
+                            "pos": 0.0,
+                            "value": [
+                                0.20000000298023224,
+                                0.0,
+                                1.0
+                            ],
+                            "interp": "linear"
+                        },
+                        {
+                            "pos": 0.25,
+                            "value": [
+                                0.0,
+                                0.8500000238418579,
+                                1.0
+                            ],
+                            "interp": "linear"
+                        },
+                        {
+                            "pos": 0.5,
+                            "value": [
+                                0.0,
+                                1.0,
+                                0.10000000149011612
+                            ],
+                            "interp": "linear"
+                        },
+                        {
+                            "pos": 0.75,
+                            "value": [
+                                0.949999988079071,
+                                1.0,
+                                0.0
+                            ],
+                            "interp": "linear"
+                        },
+                        {
+                            "pos": 1.0,
+                            "value": [
+                                1.0,
+                                0.0,
+                                0.0
+                            ],
+                            "interp": "linear"
+                        }
+                    ]
+                }
+            },
+            "bound3": {
+                "type": "bound",
+                "inputs": [
+                    {
+                        "from": "foreach_begin2",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    0,
+                    1.71
+                ],
+                "parms": {
+                    "group": "",
+                    "grouptype": "guess",
+                    "keepOriginal": true,
+                    "createboundinggeo": true,
+                    "createempty": true,
+                    "boundtype": "off",
+                    "orientedbbox": true,
+                    "refinementiterations": 7,
+                    "dodivs": false,
+                    "divs": [
+                        3,
+                        3,
+                        3
+                    ],
+                    "rebar": false,
+                    "minsize": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "orient": "y",
+                    "accurate": false,
+                    "minradius": 0.0,
+                    "orientedbrect": true,
+                    "origin": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "dist": 0.0,
+                    "dir": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "minpad": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "maxpad": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "addboundsgroup": false,
+                    "boundsgroup": "bounds",
+                    "addxformattrib": true,
+                    "xformattrib": "xform",
+                    "addradiiattrib": false,
+                    "radiiattrib": "radii"
+                }
+            },
+            "normal3": {
+                "type": "normal",
+                "inputs": [
+                    {
+                        "from": "attribwrangle7",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    -1.7,
+                    -2.33
+                ],
+                "parms": {
+                    "group": "",
+                    "grouptype": "guess",
+                    "overridenormal": false,
+                    "normalattrib": "N",
+                    "docompute": true,
+                    "type": "typevertex",
+                    "cuspangle": 60.0,
+                    "method": 1,
+                    "origifzero": true,
+                    "normalize": false,
+                    "reverse": false
+                }
+            },
+            "attribwrangle14": {
+                "type": "attribwrangle",
+                "inputs": [
+                    {
+                        "from": "foreach_begin2",
+                        "from_index": 0,
+                        "to_index": 0
+                    },
+                    {
+                        "from": "bound3",
+                        "from_index": 0,
+                        "to_index": 1
+                    }
+                ],
+                "position": [
+                    -1.88,
+                    0.7
+                ],
+                "parms": {
+                    "group": "",
+                    "grouptype": "guess",
+                    "class": "point",
+                    "vex_numcount": 10,
+                    "vex_threadjobsize": 1024,
+                    "snippet": "matrix mm= detail(1,'xform');\n@P *= invert(mm);",
+                    "exportlist": "*",
+                    "vex_strict": false,
+                    "vex_strictvariables": true,
+                    "autobind": true,
+                    "bindings": 0,
+                    "groupautobind": true,
+                    "groupbindings": 0,
+                    "vex_cwdpath": ".",
+                    "vex_outputmask": "*",
+                    "vex_updatenmls": false,
+                    "vex_matchattrib": "id",
+                    "vex_inplace": false,
+                    "vex_selectiongroup": "",
+                    "vex_precision": "auto"
+                }
+            },
+            "attribwrangle7": {
+                "type": "attribwrangle",
+                "inputs": [
+                    {
+                        "from": "attribwrangle14",
+                        "from_index": 0,
+                        "to_index": 0
+                    },
+                    {
+                        "from": "bound3",
+                        "from_index": 0,
+                        "to_index": 1
+                    }
+                ],
+                "position": [
+                    -1.7,
+                    -0.93
+                ],
+                "parms": {
+                    "group": "",
+                    "grouptype": "guess",
+                    "class": "point",
+                    "vex_numcount": 10,
+                    "vex_threadjobsize": 1024,
+                    "snippet": "matrix mm = dihedral(set(0,0,1),v@N);\nmatrix m2 = detail(1,'xform');\nmatrix m3 = mm*m2;\n@P *= invert(mm);\nsetdetailattrib(0,\"mm\",m3);\n\n",
+                    "exportlist": "*",
+                    "vex_strict": false,
+                    "vex_strictvariables": true,
+                    "autobind": true,
+                    "bindings": 0,
+                    "groupautobind": true,
+                    "groupbindings": 0,
+                    "vex_cwdpath": ".",
+                    "vex_outputmask": "*",
+                    "vex_updatenmls": false,
+                    "vex_matchattrib": "id",
+                    "vex_inplace": false,
+                    "vex_selectiongroup": "",
+                    "vex_precision": "auto"
+                }
+            },
+            "del_area0": {
+                "type": "attribwrangle",
+                "inputs": [
+                    {
+                        "from": "blast_index",
+                        "from_index": 0,
+                        "to_index": 0
+                    }
+                ],
+                "position": [
+                    0,
+                    4.51
+                ],
+                "parms": {
+                    "group": "",
+                    "grouptype": "guess",
+                    "class": "primitive",
+                    "vex_numcount": 10,
+                    "vex_threadjobsize": 1024,
+                    "snippet": "if (primintrinsic(0,\"measuredarea\",@primnum)==0.0){\n    removeprim(0,@primnum,1);\n}",
+                    "exportlist": "*",
+                    "vex_strict": false,
+                    "vex_strictvariables": true,
+                    "autobind": true,
+                    "bindings": 0,
+                    "groupautobind": true,
+                    "groupbindings": 0,
+                    "vex_cwdpath": ".",
+                    "vex_outputmask": "*",
+                    "vex_updatenmls": false,
+                    "vex_matchattrib": "id",
+                    "vex_inplace": false,
+                    "vex_selectiongroup": "",
+                    "vex_precision": "auto"
+                }
+            },
+            "1": {
+                "type": "SubnetIndirectInput",
+                "position": [
+                    0,
+                    8.03
+                ]
+            }
+        }
+    }
+}

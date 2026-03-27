@@ -194,6 +194,7 @@ class Ui_Main(QWidget):
 
         layout.addWidget(self.tb_set)
         layout.addWidget(self.tb_bz)
+        layout.addWidget(self.tb_help)
         layout.addWidget(self.btn_apply)
         layout.addWidget(self.btn_refresh)
 
@@ -201,6 +202,7 @@ class Ui_Main(QWidget):
 
     def _create_bottom_buttons(self):
         self.tb_bz = Snail_IconBtn_bz()
+        self.tb_help = Snail_IconBtn_help()
         self.tb_set = Snail_IconBtn("snail_set", "Settings")
         self.btn_refresh = Snail_Btn("Refresh")
         self.btn_apply = Snail_Btn("Apply")
@@ -405,11 +407,11 @@ class Ui_Setting(QDialog):
 
     def refresh_tips(self):
         tips = [
-            "* Add: Add a new library to list",
+            "* Add: Add a new library to the list",
             "* Delete: Select a library and click delete",
             "* Modify: Select a library and modify its properties",
             "* Package: 'package : hda_name'",
-            "* Name: The name of library",
+            "* Name: The name of the library",
         ]
         self.t_tips.update_tips(tips)
 
@@ -447,7 +449,7 @@ class Ui_Setting(QDialog):
     def get_selected_lib_name(self):
         row = self.tw_libList.currentRow()
         if not self._is_valid_row(row):
-            hou.ui.displayMessage("Please select a library from list")
+            hou.ui.displayMessage("Please select a library from the list")
             return None
         return MYSET.lib_sort[row]
 
@@ -705,7 +707,7 @@ class Item_Widget(QToolButton):
         return icon_dict.get(self.type, "BUTTONS_recipe")
 
     def apply_recipe(self):
-        self.parent.apply_item2(self.id)
+        self.parent.manager.apply_item(self.id)
 
     def cap_thumb(self):
         capImg = cap.CaptureImage(self.thumb_abs)

@@ -1,3 +1,5 @@
+from PySide6 import QtCore, QtGui
+from PySide6.QtWidgets import *
 from .allSetting import ALLSET
 from .snailFun import (
     display_status,
@@ -18,10 +20,12 @@ from .snailFun import (
 from .snailWidget import (
     Snail_List2,
     Snail_Btn,
+    Snail_Btn2,
     Snail_ColorBtn,
     Snail_ComboBox,
     Snail_CheckBox,
     Snail_DropLabel,
+    Snail_DropLabel2,
     Snail_Menu,
     Snail_IconBtn,
     Snail_IconBtn2,
