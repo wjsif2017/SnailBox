@@ -1,0 +1,12 @@
+{
+    "enable": true,
+    "env": [
+        {
+            "SnailBox": "Custom_path/SnailBox"
+        },
+        {
+            "SnailBox_lib": "Custom_path/SnailBox_lib"
+        }
+    ],
+    "hpath": "$SnailBox;$SnailBox_lib"
+}

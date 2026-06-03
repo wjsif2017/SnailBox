@@ -1,14 +1,14 @@
+from utils import fileThumb
 from utils.allSetting import ALLSET
 from utils.snailFun import *
-from utils import fileThumb
 
 
-def update_callback(**kwargs):
+def update_callback(**kwargs):  # 更新回调函数
     try:
         node = kwargs.get("node")
         parm_name = kwargs.get("parm_name")
         node_name = node.name()
-        node.removeAllEventCallbacks()
+        node.removeAllEventCallbacks()  # 删除回调函数
         h_version = float(ALLSET.h_version)
         if h_version < 20.5:
             call_fun2 = lambda **kwargs: node_changed_callback(
@@ -23,7 +23,7 @@ def update_callback(**kwargs):
             ),
             call_fun2,
         )
-        if parm_name:
+        if parm_name:  # 以后会有材质等不会有参数改变
             node.addParmCallback(parm_changed_callback, (parm_name,))
     except Exception as e:
         node = kwargs.get("node")
@@ -31,7 +31,7 @@ def update_callback(**kwargs):
         display_status(msg)
 
 
-def reset_node_bg_event(nodes=[]):
+def reset_node_bg_event(nodes=[]):  # 项目开始时重置节点背景回调函数,回调函数不会保存
     for node in nodes:
         try:
             filethumb = fileThumb.FileThumb(node=node)
@@ -41,7 +41,7 @@ def reset_node_bg_event(nodes=[]):
             display_status(msg)
 
 
-def node_changed_callback(**kwargs):
+def node_changed_callback(**kwargs):  # 节点删除改名回调函数
     try:
         event_type = kwargs.get("event_type")
         node = kwargs.get("node")
@@ -55,15 +55,15 @@ def node_changed_callback(**kwargs):
             old_path = new_path.rsplit("/", 1)[0] + "/" + old_name
             filethumb = fileThumb.FileThumb(node=node)
             filethumb.change_node_bg(old_path)
-            update_callback(node=node, parm_name=parm_name)
+            update_callback(node=node, parm_name=parm_name)  # 20.5之前改名回调不会自动传回old_name
     except Exception as e:
         node = kwargs.get("node")
         msg = f"Snail_error_cb: node_changed_callback {node} _ {e}"
         display_status(msg)
-        node.removeAllEventCallbacks()
+        node.removeAllEventCallbacks()  # 删除回调函数
 
 
-def parm_changed_callback(**kwargs):
+def parm_changed_callback(**kwargs):  # 文件参数改变回调函数
     try:
         node = kwargs.get("node")
         parm_tuple = kwargs.get("parm_tuple")
@@ -78,7 +78,7 @@ def parm_changed_callback(**kwargs):
         node.removeAllEventCallbacks()
 
 
-def clear_node_bg(nodes=[]):
+def clear_node_bg(nodes=[]):  # 清除节点时更新背景
     nodes = hou.selectedNodes() if not nodes else []
     if not nodes:
         try:
@@ -109,7 +109,7 @@ def clear_node_bg(nodes=[]):
                 display_status(f"Snail_error_cb: clear_node_bg {node} _ {e}")
 
 
-def update_fileThumb():
+def update_fileThumb():  # 开启自动更新预览图
     nodes = hou.selectedNodes()
     if not nodes:
         if ALLSET.language:

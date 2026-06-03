@@ -385,6 +385,7 @@ class Snail_LineEdit(QLineEdit):  # line输入
         super().__init__(text, pa)
         self.setPlaceholderText(tip)
         self.setFixedHeight(25)
+        self.setProperty("radius", "right")  # 默认
         self.setStyleSheet(
             "QLineEdit {font-family: Microsoft YaHei UI; font-size: 13px;text_align: left; background-color: rgb(27,27,27); padding-left: 4px;}"
             "QLineEdit[radius='all'] {border-radius: 5px;}"
@@ -458,7 +459,8 @@ class Snail_IconBtn(QToolButton):  # ICON小按钮
         super().__init__(pa)
         icon = Snail_icon(icon_name)
         self.setIcon(icon)
-        self.setIconSize(QtCore.QSize(20, 20))
+        self.setIconSize(QtCore.QSize(18, 18))
+        self.setFixedSize(25, 25)  # 固定 25x25 尺寸，与 Snail_LineEdit 对齐
         if tip:
             self.setToolTip(tip)
         bg_list = [
@@ -488,7 +490,6 @@ class Snail_IconBtn(QToolButton):  # ICON小按钮
             """
         )
         self.setProperty("transparent", True)
-        self.resize(24, 24)
 
 
 class Snail_IconBtn_checked(Snail_IconBtn):  # ICON小按钮,checked状态有不同

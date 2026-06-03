@@ -9,6 +9,8 @@
     <memberTool name="snail_materialManger"/>
     <memberTool name="snail_ae"/>
     <memberTool name="snail_recipe"/>
+    <memberTool name="snail_flipbook"/>
+    <memberTool name="snail_cv"/>
   </toolshelf>
 
   <tool name="snail_ae" label="S_Ae" icon="$SnailBox/icons/SnailAE.svg">
@@ -21,8 +23,19 @@ ae.main_show()]]></script>
 mm.main_show()]]></script>
   </tool>
 
-    <tool name="snail_recipe" label="S_Recipe" icon="BUTTONS_recipe">
+  <tool name="snail_recipe" label="S_Recipe" icon="BUTTONS_recipe">
     <script scriptType="python"><![CDATA[from recipeBox import main_rb as rb
 rb.main_show()]]></script>
+  </tool>
+
+  <tool name="snail_flipbook" label="S_Flipbook" icon="$SnailBox/icons/SnailFB.svg">
+    <script scriptType="python"><![CDATA[from flipbook import main_fb as fb
+fb.main_show()]]></script>
+  </tool>
+
+  <tool name="snail_cv" label="S_CVideo" icon="BUTTONS_take">
+    <script scriptType="python"><![CDATA[from utils import capture as cap
+win_cap = cap.CaptureVideo()
+win_cap.show()]]></script>
   </tool>
 </shelfDocument>

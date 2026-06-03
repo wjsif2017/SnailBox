@@ -3,7 +3,7 @@ import os
 import json
 
 
-def h_version():
+def h_version():  # 获取Houdini版本号
     h_v = hou.applicationVersion()
     h_v2 = ".".join(map(str, h_v[:2]))
     try:
@@ -18,12 +18,16 @@ def write_json(s_path):
         pre_path = hou.getenv("HOUDINI_USER_PREF_DIR")
         j_path = os.path.join(pre_path, "packages")
         j_file = os.path.join(j_path, "SnailBox.json")
+        # 同级目录下创建 lib 文件夹，并在 SnailBox.json 中添加环境变量指向该文件夹
+        s_path_parent = os.path.dirname(s_path)
+        lib_path = f"{s_path_parent}/SnailBox_lib"
         os.makedirs(j_path, exist_ok=True)
+        os.makedirs(lib_path, exist_ok=True)
         h_v = h_version()
         if h_v > 19.0:
-            j_cont = {"enable": True, "env": [{"SnailBox": s_path}], "hpath": "$SnailBox"}
+            j_cont = {"enable": True, "env": [{"SnailBox": s_path}, {"SnailBox_lib": lib_path}], "hpath": "$SnailBox"}
         else:
-            j_cont = {"enable": True, "env": [{"SnailBox": s_path}], "path": "$SnailBox"}
+            j_cont = {"enable": True, "env": [{"SnailBox": s_path}, {"SnailBox_lib": lib_path}], "path": "$SnailBox"}
         with open(j_file, "w", encoding="utf8") as f:
             json.dump(j_cont, f, indent=4)
         if h_v > 18.5:

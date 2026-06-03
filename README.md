@@ -5,7 +5,7 @@
 > ### [ Online documents / 在线文档](https://www.notion.so/snailbox/Houdini-SnailBox-Document-15b5f6c2eb588054a603c57f07f759c5)
 > 
 ---
-![Setup GIF](Install.gif)
+![Setup GIF](SnailBox_Install.gif)
 ## SnailBox Auto Install
 
 

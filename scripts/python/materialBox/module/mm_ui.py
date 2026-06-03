@@ -1,6 +1,8 @@
-from hutil.Qt.QtCore import *
-from hutil.Qt.QtGui import *
-from hutil.Qt.QtWidgets import *
+# -*- coding: utf-8 -*-
+
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 from utils import *
 from .mm_set import MYSET
 import os
@@ -44,8 +46,7 @@ class Ui_Snail_MM(QWidget):
         self.leftMenu.setSpacing(5)
         self.leftMenu.setObjectName("leftMenu")
         self.leftMenu.setContentsMargins(0, 0, 0, 0)
-        self.verticalSpacer_2 = QSpacerItem(
-            20, 38, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.verticalSpacer_2 = QSpacerItem(20, 38, QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.leftMenu.addItem(self.verticalSpacer_2)
 
@@ -83,8 +84,7 @@ class Ui_Snail_MM(QWidget):
 
         self.leftMenu.addWidget(self.lw_menu1)
 
-        self.verticalSpacer_3 = QSpacerItem(
-            20, 40, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         self.leftMenu.addItem(self.verticalSpacer_3)
 
@@ -115,8 +115,7 @@ class Ui_Snail_MM(QWidget):
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.splitter_v = QSplitter(self.verticalLayoutWidget_2)
         self.splitter_v.setObjectName("splitter_v")
-        self.splitter_v.setStyleSheet(
-            "QListWidget {background-color: rgba(0,0,0,0);}")
+        self.splitter_v.setStyleSheet("QListWidget {background-color: rgba(0,0,0,0);}")
         self.splitter_v.setOrientation(Qt.Vertical)
         self.verticalLayoutWidget_3 = QWidget(self.splitter_v)
         self.verticalLayoutWidget_3.setObjectName("verticalLayoutWidget_3")
@@ -187,8 +186,7 @@ class Ui_Snail_MM(QWidget):
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.gb_info.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(self.gb_info.sizePolicy().hasHeightForWidth())
         self.gb_info.setSizePolicy(sizePolicy)
         self.gb_info.setMinimumSize(QSize(0, 0))
         font3 = QFont()
@@ -229,8 +227,7 @@ class Ui_Snail_MM(QWidget):
         self.splitter.addWidget(self.gb_info)
         self.gb_asset = QGroupBox(self.splitter)
         self.gb_asset.setObjectName("gb_asset")
-        sizePolicy.setHeightForWidth(
-            self.gb_asset.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(self.gb_asset.sizePolicy().hasHeightForWidth())
         self.gb_asset.setSizePolicy(sizePolicy)
         self.gb_asset.setMinimumSize(QSize(0, 0))
         self.gb_asset.setFont(font3)
@@ -305,14 +302,16 @@ class Ui_Dialog(QDialog):
         self.pa = parent
         self.setWindowIcon(QIcon(ALLSET.sbox_path + "/icons/SnailBox.svg"))
         self.setWindowTitle("SnailBox Material Manger Settings")
-        self.setStyleSheet(
-            "*{background-color: rgb(35, 35, 39);}" "*:hover{color: rgb(255, 191, 0);}"
-        )
+        # self.setStyleSheet(
+        #     "*{background-color: rgb(35, 35, 39);}" "*:hover{color: rgb(255, 191, 0);}"
+        # )
         self.resize(640, 560)
+        # 移除帮助按钮，保留关闭按钮
         self.setWindowFlags(
-            self.windowFlags() & ~Qt.WindowContextHelpButtonHint
-            | Qt.WindowCloseButtonHint
+        self.windowFlags() & ~QtCore.Qt.WindowContextHelpButtonHint
+            | QtCore.Qt.WindowCloseButtonHint
         )
+
         self.init_ui()
 
     def init_ui(self):
@@ -323,17 +322,13 @@ class Ui_Dialog(QDialog):
             "QTabBar {font-family: Microsoft YaHei UI; font-size: 14px;}"
         )
         layout_main.addWidget(self.stw)
-        spacer = QSpacerItem(0, 0, QSizePolicy.Expanding,
-                             QSizePolicy.Expanding)
+        spacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # region tab0
         layout_01 = QVBoxLayout()
-        self.cb_copyAssets = Snail_CheckBox(
-            "Copy assets to lib when Collecting material")
-        self.cb_nodebg = Snail_CheckBox(
-            "Set node background for crate material")
-        self.cb_gsgTri = Snail_CheckBox(
-            "Set triplanar texture for GSG material")
+        self.cb_copyAssets = Snail_CheckBox("Copy assets to lib when Collecting material")
+        self.cb_nodebg = Snail_CheckBox("Set node background for crate material")
+        self.cb_gsgTri = Snail_CheckBox("Set triplanar texture for GSG material")
         layout_01_1 = QHBoxLayout()
         self.lb_gsgMat = Snail_Label("GSG material type")
         self.cr_gsgMat_0 = Snail_RadioButton("Karma", "GSG Karma")
@@ -389,8 +384,7 @@ class Ui_Dialog(QDialog):
         layout_13 = QHBoxLayout()
         self.sle_libPath = Snail_LineEdit("snailBox_this")
         self.sle_libPath.setDisabled(True)
-        self.sb_selPath = Snail_IconBtn(
-            "BUTTONS_chooser_folder", "Select lib path")
+        self.sb_selPath = Snail_IconBtn("BUTTONS_chooser_folder", "Select lib path")
         self.sb_selPath.clicked.connect(self.sel_lib_floder)
         layout_13.addWidget(self.sle_libPath)
         layout_13.addWidget(self.sb_selPath)
@@ -528,9 +522,12 @@ class Ui_Dialog(QDialog):
             self.slw_fliter_nodes.addItem(one)
 
     def refresh_table_libList(self):  # 刷新库列表
+        """刷新库列表（只显示用户库，不显示插件库）"""
         self.stw_libList.clearContents()  # 清理表格内容
-        self.stw_libList.setRowCount(len(MYSET.lib_sort))
-        for index, lib_name in enumerate(MYSET.lib_sort):
+        self.stw_libList.setSortingEnabled(False)  # 禁用排序
+        user_libs_list = list(MYSET.user_lib_sort)  # 只显示用户库
+        self.stw_libList.setRowCount(len(user_libs_list))
+        for index, lib_name in enumerate(user_libs_list):
             lib_dict = MYSET.libs.get(lib_name)
             if lib_dict is None:
                 continue
@@ -553,26 +550,36 @@ class Ui_Dialog(QDialog):
         self.scb_icon.setCurrentIndex(0)
 
     def refresh_index_cb(self):  # 添加库的下拉列表
+        """生成位置索引下拉列表（只计算用户库）"""
         self.scb_index.clear()
-        num = len(MYSET.lib_sort)
+        num = len(MYSET.user_lib_sort)  # 只计算用户库数量
         for i in range(num + 1):
             index = str(i + 1)
             self.scb_index.addItem(index)
         self.scb_index.setCurrentIndex(num)
 
     def refresh_lib_set(self):  # 点击lib_item刷新库选项设置
+        """刷新库选项设置（只针对用户库）"""
         self.refresh_lib_tips(-1)
-        index = self.stw_libList.currentRow()
         lib_name = self.sel_lib_name()
         if not lib_name:
             return
+
+        # 如果选中的是插件库，不处理
+        if lib_name in MYSET.sn_lib_sort:
+            return
+
         lib = MYSET.libs.get(lib_name)
         self.sle_libName.setText(lib.get("name"))
         self.sle_libPath.setText(lib.get("path"))
         self.scb_lib_type.setCurrentText(lib.get("type"))
         self.scb_icon.setCurrentText(lib.get("icon"))
-        lib_index = str(index + 1)
-        self.scb_index.setCurrentText(lib_index)
+
+        # 计算在 user_lib_sort 中的位置（1-based）
+        if lib_name in MYSET.user_lib_sort:
+            index = MYSET.user_lib_sort.index(lib_name)
+            lib_index = str(index + 1)
+            self.scb_index.setCurrentText(lib_index)
 
     def sel_lib_floder(self):  # 选择库文件夹
         path = MYSET.lib_path
@@ -649,36 +656,59 @@ class Ui_Dialog(QDialog):
         self.t_tips3.update_tips(tips3)
 
     def sel_lib_name(self):
+        """获取当前选中的库名称（只返回用户库）"""
         index = self.stw_libList.currentRow()
         if index == -1:
             msg = "请在表格中点击选择一个库" if ALLSET.language else "Select a lib"
             hou.ui.displayMessage(msg)
             return
-        lib_name = MYSET.lib_sort[index]
+        # 表格只显示用户库，所以从 user_lib_sort 获取
+        lib_name = MYSET.user_lib_sort[index]
         if lib_name:
             return lib_name
 
-    def update_lib(self):  # 更新库
+    def update_lib(self):  # 更新库（只允许更新用户库）
         lib_name = self.sel_lib_name()
         if not lib_name:
             return
+
+        # 检查是否为插件库
+        if lib_name in MYSET.sn_lib_sort:
+            msg = "SnailBox libraries cannot be modified" if not ALLSET.language else "SnailBox 插件库不能修改"
+            hou.ui.displayMessage(msg)
+            return
+
         MYSET.update_lib(lib_name)
 
-    def del_lib(self):  # 删除库
+    def del_lib(self):  # 删除库（只允许删除用户库）
         lib_name = self.sel_lib_name()
         if not lib_name:
             return
+
+        # 检查是否为插件库
+        if lib_name in MYSET.sn_lib_sort:
+            msg = "SnailBox libraries cannot be deleted" if not ALLSET.language else "SnailBox 插件库不能删除"
+            hou.ui.displayMessage(msg)
+            return
+
         MYSET.del_lib(lib_name)
         self.refresh_index_cb()
         self.refresh_table_libList()
         self.update_win()
 
     def mod_lib(self):  # 修改库
+        """修改库（只允许修改用户库）"""
         lib_name = self.sel_lib_name()
         if not lib_name:
             return
+
+        # 检查是否为插件库
+        if lib_name in MYSET.sn_lib_sort:
+            msg = "SnailBox libraries cannot be modified" if not ALLSET.language else "SnailBox 插件库不能修改"
+            hou.ui.displayMessage(msg)
+            return
+
         lib_json = MYSET.libs.get(lib_name)
-        MYSET.del_lib(lib_name)
         before_name = lib_json.get("name")
         before_type = lib_json.get("type")
 
@@ -708,11 +738,14 @@ class Ui_Dialog(QDialog):
             lib_json["icon"] = lib_icon_index
             lib_json["path"] = lib_path
             MYSET.save_lib_json(lib_name, lib_json)
-            if lib_name in MYSET.lib_sort:  # 删除旧库
-                MYSET.lib_sort.remove(lib_name)
-            MYSET.lib_sort.insert(new_index, lib_name)
+
+            # 修改 user_lib_sort 的顺序
+            if lib_name in MYSET.user_lib_sort:
+                MYSET.user_lib_sort.remove(lib_name)
+            MYSET.user_lib_sort.insert(new_index, lib_name)
+            MYSET.save_user_json()
         except Exception as e:
-            display_status(f"Snail_error_mmui: mod_lib _ {e}", 1)
+            display_status(f"Snail_error_usf: mod_lib _ {e}", 1)
         MYSET.scan_libs()
         self.refresh_table_libList()
         self.update_win()
@@ -736,8 +769,8 @@ class Ui_Dialog(QDialog):
             hou.ui.displayMessage(msg)
             return
 
-        # 排除重复lib_name
-        if lib_name in MYSET.lib_sort:
+        # 排除重复lib_name（只检查用户库）
+        if lib_name in MYSET.user_lib_sort:
             if ALLSET.language:
                 msg2 = f"{lib_name}库已存在"
             else:
@@ -864,31 +897,22 @@ class Ui_Dialog(QDialog):
 
     def retranslateUi(self):  # 重新翻译
         try:
-            self.cb_copyAssets.setText(
-                self.tr("Copy assets to lib when Collecting material"))
-            self.cb_nodebg.setText(
-                self.tr("Set node background for crate material"))
-            self.cb_gsgTri.setText(
-                self.tr("Set triplanar texture for GSG material"))
+            self.cb_copyAssets.setText(self.tr("Copy assets to lib when Collecting material"))
+            self.cb_nodebg.setText(self.tr("Set node background for crate material"))
+            self.cb_gsgTri.setText(self.tr("Set triplanar texture for GSG material"))
             self.lb_gsgMat.setText(self.tr("GSG material type"))
             self.sb_libDel.setText(self.tr("Delete"))
             self.sb_libMod.setText(self.tr("Modify"))
             self.sb_libRescan.setText(self.tr("Update"))
             self.sb_libAdd.setText(self.tr("Add"))
             self.sb_del_node_preset.setText(self.tr("Delete"))
-            self.lb_add_node_preset.setText(
-                self.tr("Drag and drop node here to Add"))
+            self.lb_add_node_preset.setText(self.tr("Drag and drop node here to Add"))
             self.sb_del_other_parm.setText(self.tr("Delete"))
-            self.lb_add_other_parm.setText(
-                self.tr("Drag and drop node here to Add"))
-            self.stw.setTabText(self.stw.indexOf(
-                self.s_tab_0), self.tr("Options"))
-            self.stw.setTabText(self.stw.indexOf(
-                self.s_tab_1), self.tr("Add Library"))
-            self.stw.setTabText(self.stw.indexOf(
-                self.s_tab_2), self.tr("Other node"))
-            self.stw.setTabText(self.stw.indexOf(
-                self.s_tab_3), self.tr("Filter Node"))
+            self.lb_add_other_parm.setText(self.tr("Drag and drop node here to Add"))
+            self.stw.setTabText(self.stw.indexOf(self.s_tab_0), self.tr("Options"))
+            self.stw.setTabText(self.stw.indexOf(self.s_tab_1), self.tr("Add Library"))
+            self.stw.setTabText(self.stw.indexOf(self.s_tab_2), self.tr("Other node"))
+            self.stw.setTabText(self.stw.indexOf(self.s_tab_3), self.tr("Filter Node"))
         except Exception as e:
             display_status(f"Snail_error_ht4: retranslateUi _ {e}")
 

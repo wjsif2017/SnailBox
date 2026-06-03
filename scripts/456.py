@@ -1,9 +1,12 @@
 import json
 import hou
-import sn_callback
+try:
+    import sn_callback
+except:
+    print("SnailBox import sn_callback failed")
 
 
-def bg_nodes(data):
+def bg_nodes(data):  # 根据userData获取背景节点
     rel_nodes = []
     bg_dic = json.loads(data)
     for one in bg_dic:
@@ -15,7 +18,7 @@ def bg_nodes(data):
     return rel_nodes
 
 
-def allnode(node, li=[]):
+def allnode(node, li=[]):  # 递归获取所有节点
     for child in node.children():
         if child.isInsideLockedHDA():
             continue
@@ -28,7 +31,7 @@ def allnode(node, li=[]):
     return li
 
 
-def reset_bg_event():
+def reset_bg_event():  # 重新注册背景节点事件
     try:
         all_bg_nodes = allnode(hou.node("/"))
         if all_bg_nodes:

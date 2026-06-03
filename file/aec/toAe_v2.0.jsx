@@ -356,7 +356,13 @@ if (jsonFile != null) {
 
     if (jsonIsValid) {
         // 检查是否是纯预览数据（只有 __preview__）
-        var isPreviewOnly = Object.keys(jsonData).length === 1 && jsonData["__preview__"] && jsonData["__preview__"].type === "preview";
+        var jsonKeys = [];
+        for (var k in jsonData) {
+            if (jsonData.hasOwnProperty(k)) {
+                jsonKeys.push(k);
+            }
+        }
+        var isPreviewOnly = jsonKeys.length === 1 && jsonData["__preview__"] && jsonData["__preview__"].type === "preview";
 
         if (isPreviewOnly) {
             // 纯预览模式：直接导入序列到当前激活合成的最底层
