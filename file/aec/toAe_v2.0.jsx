@@ -14,7 +14,10 @@ function createComposition(data) {
     var startTime = (data.f_start - 1) / data.fps;
     var endTime = (data.f_end - 1) / data.fps;
     comp.workAreaStart = startTime;
-    comp.workAreaDuration = endTime - startTime + (1 / data.fps);
+
+    var requestedWorkAreaDuration = endTime - startTime + (1 / data.fps);
+    var maxWorkAreaDuration = comp.duration - comp.workAreaStart;
+    comp.workAreaDuration = Math.max(comp.frameDuration, Math.min(requestedWorkAreaDuration, maxWorkAreaDuration - 0.0001));
 
     // 先取消所有项目的选中状态
     for (var i = 1; i <= app.project.numItems; i++) {
