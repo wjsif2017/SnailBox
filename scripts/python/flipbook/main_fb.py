@@ -149,20 +149,21 @@ class Fb_win(QWidget):
 
 def main_show():
     """调用主界面 (独立窗口)"""
-    try:
-        houMainWindow = hou.qt.mainWindow()
-        getChildWin = houMainWindow.findChild(QWidget, "Snail_fb")
-        if getChildWin:
-            getChildWin.close()
-            getChildWin.deleteLater()
-    except:
-        pass
-
+    # 单开模式：用 ALLSET 保存窗口引用，避免 Houdini 22 下 findChild 找不到窗口
+    # 同时防止 shelf 的 importlib.reload 重置模块级全局导致单开失败
+    old = getattr(ALLSET, "_fb_win", None)
+    if old is not None:
+        try:
+            old.close()
+            old.deleteLater()
+        except Exception:
+            pass
     if not ALLSET.verify_sig("fb"):
         return
     mywin = Fb_win()
     mywin.setParent(hou.qt.mainWindow(), QtCore.Qt.Window)
     mywin.show()
+    ALLSET._fb_win = mywin
 
 
 def callInterface():

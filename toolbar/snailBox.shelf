@@ -6,21 +6,17 @@
  a single file. -->
 
   <toolshelf name="snail_box" label="Snail Box">
-    <memberTool name="snail_materialManger"/>
+    <memberTool name="snail_material"/>
     <memberTool name="snail_ae"/>
     <memberTool name="snail_recipe"/>
     <memberTool name="snail_flipbook"/>
+    <memberTool name="snail_pack"/>
     <memberTool name="snail_cv"/>
   </toolshelf>
 
   <tool name="snail_ae" label="S_Ae" icon="$SnailBox/icons/SnailAE.svg">
     <script scriptType="python"><![CDATA[from toAe import main_ae as ae
 ae.main_show()]]></script>
-  </tool>
-
-  <tool name="snail_materialManger" label="S_MaterialManger" icon="$SnailBox/icons/SnailMM.svg">
-    <script scriptType="python"><![CDATA[from materialBox import main_mm as mm
-mm.main_show()]]></script>
   </tool>
 
   <tool name="snail_recipe" label="S_Recipe" icon="BUTTONS_recipe">
@@ -37,5 +33,15 @@ fb.main_show()]]></script>
     <script scriptType="python"><![CDATA[from utils import capture as cap
 win_cap = cap.CaptureVideo()
 win_cap.show()]]></script>
+  </tool>
+
+  <tool name="snail_pack" label="S_Pack" icon="$SnailBox/icons/SnailPP.svg">
+    <script scriptType="python"><![CDATA[from projectPack import main_pp as pp
+pp.main_show()]]></script>
+  </tool>
+
+  <tool name="snail_material" label="S_Material" icon="$SnailBox/icons/SnailMM.svg">
+    <script scriptType="python"><![CDATA[from materialBox import main_mm as mm
+mm.main_show()]]></script>
   </tool>
 </shelfDocument>

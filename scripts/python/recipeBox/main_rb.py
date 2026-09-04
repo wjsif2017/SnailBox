@@ -139,15 +139,17 @@ def main_show():
 
     关闭已存在的窗口，验证签名，创建并显示新窗口。
     """
-    try:
-        houMainWindow = hou.qt.mainWindow()
-        getChildWin = houMainWindow.findChild(QWidget, "Snail_RB")
-        getChildWin.close()
-        getChildWin.deleteLater()
-    except:
-        pass
+    # 单开模式：用 ALLSET 保存窗口引用，避免 Houdini 22 下 findChild 找不到窗口
+    old = getattr(ALLSET, "_rb_win", None)
+    if old is not None:
+        try:
+            old.close()
+            old.deleteLater()
+        except Exception:
+            pass
     if not ALLSET.verify_sig("rb"):
         return
     mywin2 = RB_Win()
     mywin2.setParent(hou.qt.mainWindow(), QtCore.Qt.Window)
     mywin2.show()
+    ALLSET._rb_win = mywin2

@@ -189,15 +189,19 @@ class Ae_win(QWidget):
 
 def main_show():
     """调用主界面"""
-    # 查找已存在的窗口
-    houMainWindow = hou.qt.mainWindow()
-    get_child_win = houMainWindow.findChild(QWidget, "SnailBox_AeBridger")
-    if get_child_win:
-        get_child_win.close()
-        get_child_win.deleteLater()
+    # 单开模式：用 ALLSET 保存窗口引用，避免 Houdini 22 下 findChild 找不到窗口
+    # 同时防止 shelf 的 importlib.reload 重置模块级全局导致单开失败
+    old = getattr(ALLSET, "_ae_win", None)
+    if old is not None:
+        try:
+            old.close()
+            old.deleteLater()
+        except Exception:
+            pass
     if not ALLSET.verify_sig("ae"):
         return
     # 创建新窗口
     win = Ae_win()
     win.setParent(hou.qt.mainWindow(), QtCore.Qt.Window)
     win.show()
+    ALLSET._ae_win = win

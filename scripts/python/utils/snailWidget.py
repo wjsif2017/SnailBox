@@ -690,6 +690,9 @@ class Snail_ColorBtn(QPushButton):  # 颜色按钮
         self.setProperty("radius", "all")  # 默认圆角
         self._color_rgb = (15, 100, 200)  # 默认颜色 RGB (0-255 范围)
         self.setFixedWidth(width)
+        # 与相邻 Snail_LabelA/Snail_SpinBox(高度25) 对齐；
+        # Houdini 22 (Qt6) 下 QPushButton 默认高度变大导致行内高度不一致
+        self.setFixedHeight(25)
         self._update_stylesheet()
 
     def set_radius(self, mode="none"):

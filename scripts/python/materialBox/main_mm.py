@@ -52,7 +52,8 @@ class MM_Win(QWidget):
             "QListWidget::item:selected{border: 2px solid rgb(255,163,32);}"
         )
         self.ui.lw_menu1.setStyleSheet(
-            "QListWidget::item:selected {background-color:rgb(35, 35, 39); border-left: 6px solid rgb(255,163,32);}"
+            # color: 显式指定选中文字颜色，避免 Houdini 22 (Qt6) 下回落到暗色不可读
+            "QListWidget::item:selected {background-color:rgb(35, 35, 39); border-left: 6px solid rgb(255,163,32); color: rgb(210,210,210);}"
         )
         self.ui.splitter_h.splitterMoved.connect(self.stop_flipMove)
         self.ui.splitter_v.splitterMoved.connect(self.stop_flipMove)
@@ -720,19 +721,22 @@ class MM_Win(QWidget):
 
 
 def main_show():
-    try:
-        houMainWindow = hou.qt.mainWindow()
-        getChildWin = houMainWindow.findChild(QWidget, "Snail_MM")  # 在ui中修改名字,获取唯一
-        getChildWin.parent().close()
-        getChildWin.parent().deleteLater()
-    except:
-        pass
-    if not ALLSET.verify_sig("fb"):
+    # 单开模式：用 ALLSET 保存窗口引用，避免 Houdini 22 下 findChild 找不到窗口
+    # 同时修复原 getChildWin.parent().close() 会误关 Houdini 主窗口导致崩溃/退出
+    old = getattr(ALLSET, "_mm_win", None)
+    if old is not None:
+        try:
+            old.close()
+            old.deleteLater()
+        except Exception:
+            pass
+    if not ALLSET.verify_sig("mm"):
         return
     MYSET.init_data()
     mywin2 = MM_Win()
     mywin2.setParent(hou.qt.mainWindow(), QtCore.Qt.Window)
     mywin2.show()
+    ALLSET._mm_win = mywin2
 
 
 def callInterface():  # 调用界面

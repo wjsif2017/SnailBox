@@ -123,7 +123,8 @@ class Ui_Main(QWidget):
         list_widget = QListWidget(parent)
         list_widget.setObjectName("lw_menu1")
         list_widget.setStyleSheet(
-            "QListWidget::item:selected {background-color:rgb(35, 35, 39); border-left: 6px solid rgb(255,163,32);}"
+            # color: 显式指定选中文字颜色，避免 Houdini 22 (Qt6) 下回落到暗色不可读
+            "QListWidget::item:selected {background-color:rgb(35, 35, 39); border-left: 6px solid rgb(255,163,32); color: rgb(210,210,210);}"
         )
         list_widget.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         list_widget.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
