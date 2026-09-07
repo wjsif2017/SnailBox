@@ -22,8 +22,10 @@ import hashlib
 import hou
 from PIL import Image
 
-# 调试模式开关
-SNAIL_DBUG = True
+# 调试模式开关: 开发目录(SnailBox_dev)或设置环境变量 SNAILBOX_DEBUG=1 时打印到控制台;
+# 发布版默认 False, display_status 走 Houdini 状态栏而不是只输出到控制台
+_DEV_RUN = os.environ.get("SNAILBOX_DEBUG", "") == "1" or "SnailBox_dev" in __file__.replace("\\", "/")
+SNAIL_DBUG = _DEV_RUN
 
 
 # ============================================================================
